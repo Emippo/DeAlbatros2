@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fotobeheer | 102e FOS De Albatros</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="stylesheet" href="../css/style.css">
+<script>window.ACTIVE_PAGE='fotos'; window.ACTIVE_TOPBAR='fotos'; window.COMPONENTS_DEPTH=1;</script>
+<script src="../js/components.js"></script>
+</head>
+<body>
+
+<!-- Toegangsblokkering — wordt verborgen als ingelogd -->
+<div id="toegangGeblokkeerd" style="display:none;min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:2rem;text-align:center">
+  <i class="ti ti-lock" style="font-size:3rem;color:var(--text-muted)"></i>
+  <h2 style="font-size:1.1rem;font-weight:900">Toegang vereist</h2>
+  <p style="font-size:.85rem;color:var(--text-muted);max-width:320px">Deze pagina is enkel toegankelijk voor leiding. Log in via de knop rechtsboven.</p>
+  <button onclick="openLogin()" class="btn-blue"><i class="ti ti-login"></i> Inloggen</button>
+</div>
+
+<!-- Beheerpaneel — enkel zichtbaar als ingelogd -->
+<div id="beheerPaneel" style="display:none">
+
+  <div class="page-header">
+    <div class="section-label">Leiding</div>
+    <h1>Fotobeheer</h1>
+    <p>Maak albums aan, upload foto's en beheer de zichtbaarheid.</p>
+  </div>
+
+  <!-- Tabs -->
+  <div class="beheer-tabs">
+    <button class="beheer-tab active" onclick="toonTab('albums', this)"><i class="ti ti-layout-grid"></i> Alle albums</button>
+    <button class="beheer-tab" onclick="toonTab('nieuw', this)"><i class="ti ti-plus"></i> Nieuw album</button>
+  </div>
+
+  <!-- ══ TAB: Albums overzicht ══ -->
+  <div id="tab-albums" class="tab-panel section">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">
+      <div class="section-title" style="margin:0">Bestaande albums</div>
+      <button class="btn-blue" style="font-size:.82rem;padding:7px 16px" onclick="laadAlbums()">
+        <i class="ti ti-refresh"></i> Vernieuwen
+      </button>
+    </div>
+
+    <div id="albumsLijstLoading" style="text-align:center;padding:2rem;color:var(--text-muted)">
+      <i class="ti ti-loader" style="font-size:1.8rem;animation:spin 1s linear infinite"></i>
+      <p style="font-size:.82rem;margin-top:.4rem">Albums laden…</p>
+    </div>
+    <div id="albumsLijst" style="display:flex;flex-direction:column;gap:.7rem"></div>
+  </div>
+
+  <!-- ══ TAB: Nieuw album ══ -->
+  <div id="tab-nieuw" class="tab-panel section" style="display:none">
+    <div class="section-title" style="margin-bottom:1.2rem">Nieuw album aanmaken</div>
+
+    <div class="beheer-form">
+
+      <div class="form-row">
+        <label>Albumtitel <span class="req">*</span></label>
+        <input type="text" id="nieuwTitel" placeholder="bv. Zomerkamp 2026" maxlength="80">
+      </div>
+
+      <div class="form-row-2col">
+        <div class="form-row">
+          <label>Tak <span class="req">*</span></label>
+          <select id="nieuwTak">
+            <option value="">— Kies een tak —</option>
+            <option value="bevers">🦫 Bevers</option>
+            <option value="welpen">🐺 Welpen</option>
+            <option value="jvg">🌿 JVG's</option>
+            <option value="vg">⚜️ VG's</option>
+            <option value="seniors">🔥 Seniors</option>
+            <option value="stam">🏕️ Stam</option>
+            <option value="alle">🌟 Alle takken</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Datum <span class="req">*</span></label>
+          <input type="date" id="nieuwDatum">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>Beschrijving</label>
+        <textarea id="nieuwBeschrijving" placeholder="Korte omschrijving van het album…" rows="3" maxlength="300"></textarea>
+        <div class="form-hint">Maximaal 300 tekens</div>
+      </div>
+
+      <div class="form-row">
+        <label>Zichtbaarheid</label>
+        <div class="toggle-row">
+          <label class="toggle-switch">
+            <input type="checkbox" id="nieuwOpenbaar" checked>
+            <span class="toggle-slider"></span>
+          </label>
+          <span id="openbaar-label" style="font-size:.83rem;font-weight:700">Zichtbaar voor iedereen</span>
+        </div>
+        <div class="form-hint">Zet uit om het album enkel zichtbaar te maken voor ingelogde leiding.</div>
+      </div>
+
+      <div class="form-row">
+        <label>Google Drive-link</label>
+        <input type="url" id="nieuwDriveLink" placeholder="https://drive.google.com/drive/folders/...">
+        <div class="form-hint">Plak hier de deelbare link van de Google Drive-map. Zorg dat de map gedeeld is als "Iedereen met de link".</div>
+      </div>
+
+      <div class="form-row">
+        <label>Coverafbeelding</label>
+        <div id="dropzone" class="dropzone" onclick="document.getElementById('fotoInput').click()">
+          <i class="ti ti-photo-up" style="font-size:2rem;color:var(--text-muted)"></i>
+          <p>Klik om een coverafbeelding te kiezen</p>
+          <p style="font-size:.73rem;color:var(--text-muted)">JPG, PNG, WEBP, IMG, CR2 · max 10 MB</p>
+          <input type="file" id="fotoInput" accept="image/jpeg,image/png,image/webp,image/img,image/CR2" style="display:none" onchange="handleFotoSelectie(this.files)">
+        </div>
+        <div id="fotoPreviewGrid" class="foto-preview-grid"></div>
+      </div>
+
+      <div id="aanmaakFout" class="fout-banner" style="display:none"></div>
+      <div id="aanmaakSuccess" class="success-banner" style="display:none"></div>
+
+      <!-- Upload voortgang -->
+      <div id="uploadVoortgang" style="display:none;margin-bottom:1rem">
+        <div style="display:flex;justify-content:space-between;font-size:.78rem;font-weight:700;margin-bottom:.3rem">
+          <span id="uploadLabel">Uploaden…</span>
+          <span id="uploadProcent">0%</span>
+        </div>
+        <div class="voortgang-balk"><div id="voortgangBar" style="width:0%;background:var(--blue);height:100%;border-radius:999px;transition:width .3s"></div></div>
+      </div>
+
+      <div style="display:flex;gap:.7rem;flex-wrap:wrap">
+        <button id="aanmaakBtn" class="btn-blue" onclick="maakAlbumAan()">
+          <i class="ti ti-plus"></i> Album aanmaken &amp; uploaden
+        </button>
+        <button class="btn-outline-blue" onclick="resetForm()">
+          <i class="ti ti-refresh"></i> Formulier wissen
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+
+</div><!-- /beheerPaneel -->
+
+<script>
+// Wacht tot AlbatrosAuth.supabase beschikbaar is (zelfde patroon als fosshop)
+async function waitForSb(maxMs = 5000) {
+  const t = Date.now();
+  while (!window.AlbatrosAuth?.supabase) {
+    if (Date.now() - t > maxMs) throw new Error('Supabase niet beschikbaar.');
+    await new Promise(r => setTimeout(r, 100));
+  }
+  return window.AlbatrosAuth.supabase;
+}
+
+const TAK_META = {
+  bevers:  { emoji:'🦫', kleur:'#E24B4A', bg:'#FDEDEC', label:'Bevers' },
+  welpen:  { emoji:'🐺', kleur:'#EF9F27', bg:'#FEF9E7', label:'Welpen' },
+  jvg:     { emoji:'🌿', kleur:'#2D6A1F', bg:'#EAFBEA', label:"JVG's" },
+  vg:      { emoji:'⚡', kleur:'#1A5276', bg:'#D6EAF8', label:"VG's" },
+  seniors: { emoji:'🔥', kleur:'#7F77DD', bg:'#EAE8FF', label:'Seniors' },
+  stam:    { emoji:'🏕️', kleur:'#5a5a6a', bg:'#EAECEE', label:'Stam' },
+  alle:    { emoji:'🌟', kleur:'#0F3260', bg:'#D6EAF8', label:'Alle takken' },
+};
+
+let geselecteerdeFotos = [];
+
+// ── Auth check ────────────────────────────────────────────────
+async function checkToegang() {
+  // Wacht eerst tot auth klaar is
+  await waitForSb();
+  const ingelogd = window.AlbatrosAuth?.isLoggedIn?.();
+  document.getElementById('toegangGeblokkeerd').style.display = ingelogd ? 'none' : 'flex';
+  document.getElementById('beheerPaneel').style.display = ingelogd ? 'block' : 'none';
+  if (ingelogd) laadAlbums();
+}
+
+// waitForSb() in checkToegang() handelt de timing af
+document.addEventListener('DOMContentLoaded', checkToegang);
+
+// ── Tabs ──────────────────────────────────────────────────────
+function toonTab(naam, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
+  document.querySelectorAll('.beheer-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + naam).style.display = 'block';
+  if (btn) btn.classList.add('active');
+}
+function toonTabDirect(naam) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
+  document.querySelectorAll('.beheer-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + naam).style.display = 'block';
+  document.querySelector(`[onclick="toonTab('${naam}', this)"]`)?.classList.add('active');
+}
+
+// ── Albums laden ──────────────────────────────────────────────
+async function laadAlbums() {
+  document.getElementById('albumsLijstLoading').style.display = 'block';
+  document.getElementById('albumsLijst').innerHTML = '';
+
+  try {
+    const sb = await waitForSb();
+    const { data, error } = await sb.from('albums').select('*').order('datum', { ascending: false });
+    if (error) throw error;
+    renderAlbumLijst(data || []);
+  } catch (e) {
+    document.getElementById('albumsLijstLoading').style.display = 'none';
+    document.getElementById('albumsLijst').innerHTML =
+      `<p style="color:#E24B4A;font-size:.85rem">Fout bij laden: ${e.message}</p>`;
+  }
+}
+
+function renderAlbumLijst(albums) {
+  document.getElementById('albumsLijstLoading').style.display = 'none';
+  const lijst = document.getElementById('albumsLijst');
+
+  if (albums.length === 0) {
+    lijst.innerHTML = '<p style="font-size:.85rem;color:var(--text-muted)">Nog geen albums aangemaakt.</p>';
+    return;
+  }
+
+  lijst.innerHTML = albums.map(a => {
+    const meta = TAK_META[a.tak] || TAK_META.alle;
+    const datum = new Date(a.datum).toLocaleDateString('nl-BE', { day:'numeric', month:'long', year:'numeric' });
+    return `
+    <div class="album-beheer-row" id="album-row-${a.id}">
+      <div class="album-thumb-sm" style="background:${a.cover_url ? `url('${a.cover_url}') center/cover` : meta.bg}">
+        ${!a.cover_url ? meta.emoji : ''}
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">
+          <strong style="font-size:.88rem">${escapeHtml(a.titel)}</strong>
+          <span style="font-size:.65rem;font-weight:700;padding:1px 8px;border-radius:999px;background:${meta.bg};color:${meta.kleur}">${meta.label}</span>
+          ${!a.openbaar ? '<span style="font-size:.65rem;font-weight:700;padding:1px 8px;border-radius:999px;background:#FDEDEC;color:#E24B4A">Privé</span>' : ''}
+        </div>
+        <div style="font-size:.75rem;color:var(--text-muted);margin-top:.2rem">${datum} · ${a.foto_count} foto's</div>
+        ${a.beschrijving ? `<div style="font-size:.75rem;color:var(--text-muted);margin-top:.1rem">${escapeHtml(a.beschrijving)}</div>` : ''}
+      </div>
+      <div style="display:flex;gap:.4rem;flex-shrink:0">
+
+        <button class="actie-btn" title="${a.openbaar ? 'Privé maken' : 'Openbaar maken'}" onclick="toggleOpenbaar('${a.id}', ${a.openbaar})">
+          <i class="ti ti-${a.openbaar ? 'eye' : 'eye-off'}"></i>
+        </button>
+        <button class="actie-btn actie-rood" title="Album verwijderen" onclick="verwijderAlbum('${a.id}', '${escapeHtml(a.titel).replace(/'/g,"\\'")}')">
+          <i class="ti ti-trash"></i>
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Foto selectie & preview ───────────────────────────────────
+function handleFotoSelectie(files) {
+  // Enkel de eerste afbeelding als cover
+  geselecteerdeFotos = Array.from(files).slice(0, 1).filter(f => f.size <= 10 * 1024 * 1024);
+  renderPreview(geselecteerdeFotos, 'fotoPreviewGrid');
+}
+
+function renderPreview(fotos, containerId) {
+  const grid = document.getElementById(containerId);
+  if (fotos.length === 0) { grid.innerHTML = ''; return; }
+  grid.innerHTML = fotos.map((f, i) => {
+    const url = URL.createObjectURL(f);
+    return `<div class="preview-thumb" style="background:url('${url}') center/cover">
+      <button class="preview-remove" onclick="verwijderFoto(${i})">×</button>
+    </div>`;
+  }).join('');
+}
+function verwijderFoto(i) {
+  geselecteerdeFotos.splice(i, 1);
+  renderPreview(geselecteerdeFotos, 'fotoPreviewGrid');
+}
+
+// ── Drag & drop ───────────────────────────────────────────────
+const dropzone = document.getElementById('dropzone');
+if (dropzone) {
+  dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('dragover'); });
+  dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+  dropzone.addEventListener('drop', e => { e.preventDefault(); dropzone.classList.remove('dragover'); handleFotoSelectie(e.dataTransfer.files); });
+}
+
+// ── Openbaar toggle ───────────────────────────────────────────
+async function toggleOpenbaar(id, huidig) {
+  try {
+    const sb = await waitForSb();
+    const { error } = await sb.from('albums').update({ openbaar: !huidig }).eq('id', id);
+    if (error) throw error;
+    laadAlbums();
+  } catch (e) {
+    alert('Kon zichtbaarheid niet aanpassen: ' + e.message);
+  }
+}
+
+// ── Album verwijderen ─────────────────────────────────────────
+async function verwijderAlbum(id, titel) {
+  if (!confirm(`Album "${titel}" en alle bijhorende foto's verwijderen? Dit kan niet ongedaan gemaakt worden.`)) return;
+  try {
+    const sb = await waitForSb();
+    // Verwijder foto's uit storage
+    const { data: objs } = await sb.storage.from('fotos').list(`albums/${id}`);
+    if (objs?.length) {
+      const paden = objs.map(o => `albums/${id}/${o.name}`);
+      await sb.storage.from('fotos').remove(paden);
+    }
+    // Verwijder album record
+    const { error } = await sb.from('albums').delete().eq('id', id);
+    if (error) throw error;
+    laadAlbums();
+  } catch (e) {
+    alert('Verwijderen mislukt: ' + e.message);
+  }
+}
+
+
+// ── Nieuw album aanmaken ──────────────────────────────────────
+async function maakAlbumAan() {
+  const titel = document.getElementById('nieuwTitel').value.trim();
+  const tak   = document.getElementById('nieuwTak').value;
+  const datum = document.getElementById('nieuwDatum').value;
+  const beschrijving = document.getElementById('nieuwBeschrijving').value.trim();
+  const openbaar = document.getElementById('nieuwOpenbaar').checked;
+
+  document.getElementById('aanmaakFout').style.display = 'none';
+  document.getElementById('aanmaakSuccess').style.display = 'none';
+
+  if (!titel) return toonFout('aanmaakFout', 'Vul een albumtitel in.');
+  if (!tak)   return toonFout('aanmaakFout', 'Kies een tak.');
+  if (!datum) return toonFout('aanmaakFout', 'Kies een datum.');
+
+  const btn = document.getElementById('aanmaakBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="ti ti-loader" style="animation:spin 1s linear infinite"></i> Bezig…';
+  document.getElementById('uploadVoortgang').style.display = 'block';
+
+  try {
+    const sb = await waitForSb();
+
+    // 1. Album record aanmaken
+    const driveLink = document.getElementById('nieuwDriveLink').value.trim() || null;
+
+    // 1. Upload coverafbeelding indien gekozen
+    let coverUrl = null;
+    if (geselecteerdeFotos.length) {
+      document.getElementById('uploadVoortgang').style.display = 'block';
+      coverUrl = await uploadCover(sb, geselecteerdeFotos[0], 'voortgangBar', 'uploadLabel', 'uploadProcent');
+    }
+
+    // 2. Album record aanmaken
+    const { data: albumData, error: albumErr } = await sb.from('albums').insert({
+      titel, tak, datum, beschrijving: beschrijving || null, openbaar,
+      drive_link: driveLink,
+      cover_url: coverUrl,
+      aangemaakt_door: window.AlbatrosAuth?.user?.id || null
+    }).select().single();
+    if (albumErr) throw albumErr;
+
+    // Succes
+    document.getElementById('aanmaakSuccess').style.display = 'block';
+    document.getElementById('aanmaakSuccess').textContent = `✓ Album "${titel}" aangemaakt!`;
+    resetForm();
+    setTimeout(() => toonTabDirect('albums'), 1500);
+    laadAlbums();
+
+  } catch (e) {
+    toonFout('aanmaakFout', 'Aanmaken mislukt: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="ti ti-plus"></i> Album aanmaken &amp; uploaden';
+    document.getElementById('uploadVoortgang').style.display = 'none';
+  }
+}
+
+// ── Upload helper ─────────────────────────────────────────────
+async function uploadCover(sb, foto, barId, labelId, procentId) {
+  const ext = foto.name.split('.').pop().toLowerCase();
+  const pad = `covers/${Date.now()}.${ext}`;
+
+  document.getElementById(labelId).textContent = 'Coverafbeelding uploaden…';
+  document.getElementById(procentId).textContent = '50%';
+  document.getElementById(barId).style.width = '50%';
+
+  const { error } = await sb.storage.from('fotos').upload(pad, foto, { upsert: true });
+  if (error) throw new Error(`Upload mislukt: ${error.message}`);
+
+  const { data: urlData } = sb.storage.from('fotos').getPublicUrl(pad);
+
+  document.getElementById(procentId).textContent = '100%';
+  document.getElementById(barId).style.width = '100%';
+  return urlData.publicUrl;
+}
+
+// ── Helpers ───────────────────────────────────────────────────
+function toonFout(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function resetForm() {
+  document.getElementById('nieuwTitel').value = '';
+  document.getElementById('nieuwTak').value = '';
+  document.getElementById('nieuwDatum').value = '';
+  document.getElementById('nieuwBeschrijving').value = '';
+  document.getElementById('nieuwOpenbaar').checked = true;
+  document.getElementById('nieuwDriveLink').value = '';
+  geselecteerdeFotos = [];
+  document.getElementById('fotoPreviewGrid').innerHTML = '';
+  document.getElementById('fotoInput').value = '';
+  document.getElementById('aanmaakFout').style.display = 'none';
+  document.getElementById('aanmaakSuccess').style.display = 'none';
+}
+
+function escapeHtml(str) {
+  return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Openbaar toggle label
+document.getElementById('nieuwOpenbaar')?.addEventListener('change', function() {
+  document.getElementById('openbaar-label').textContent = this.checked
+    ? 'Zichtbaar voor iedereen' : 'Enkel zichtbaar voor leiding';
+});
+</script>
+
+<style>
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.beheer-tabs {
+  display: flex;
+  gap: .4rem;
+  padding: .8rem 2rem;
+  background: #fff;
+  border-bottom: 0.5px solid var(--border);
+  flex-wrap: wrap;
+}
+.beheer-tab {
+  font-family: 'Nunito', sans-serif;
+  font-size: .82rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  transition: background .15s, color .15s;
+}
+.beheer-tab:hover { background: var(--blue-pale); color: var(--blue); }
+.beheer-tab.active { background: var(--blue); color: #fff; }
+
+.beheer-form {
+  background: #fff;
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+.form-row { display: flex; flex-direction: column; gap: .35rem; }
+.form-row label { font-size: .8rem; font-weight: 900; color: var(--text); }
+.form-row input, .form-row select, .form-row textarea {
+  font-family: 'Nunito', sans-serif;
+  font-size: .85rem;
+  padding: .6rem .8rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  background: var(--cream);
+  outline: none;
+  transition: border-color .15s;
+}
+.form-row input:focus, .form-row select:focus, .form-row textarea:focus {
+  border-color: var(--blue-light);
+  background: #fff;
+}
+.form-row-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-hint { font-size: .72rem; color: var(--text-muted); }
+.req { color: #E24B4A; }
+
+.toggle-row { display: flex; align-items: center; gap: .7rem; }
+.toggle-switch { position: relative; display: inline-block; width: 40px; height: 22px; flex-shrink: 0; }
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute; inset: 0;
+  background: #ccc; border-radius: 999px;
+  transition: background .2s;
+  cursor: pointer;
+}
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 16px; height: 16px;
+  left: 3px; top: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform .2s;
+}
+.toggle-switch input:checked + .toggle-slider { background: var(--blue); }
+.toggle-switch input:checked + .toggle-slider::before { transform: translateX(18px); }
+
+.dropzone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .4rem;
+}
+.dropzone p { font-size: .82rem; color: var(--text-muted); margin: 0; }
+.dropzone:hover, .dropzone.dragover { border-color: var(--blue-light); background: var(--blue-pale); }
+
+.foto-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: .5rem;
+  margin-top: .6rem;
+}
+.preview-thumb {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  position: relative;
+  border: 1px solid var(--border);
+}
+.preview-remove {
+  position: absolute;
+  top: -6px; right: -6px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: #E24B4A;
+  color: #fff;
+  border: none;
+  font-size: .85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.voortgang-balk {
+  height: 8px;
+  background: var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.fout-banner {
+  background: #FDEDEC;
+  color: #C0392B;
+  padding: .7rem 1rem;
+  border-radius: 8px;
+  font-size: .82rem;
+  font-weight: 700;
+}
+.success-banner {
+  background: #EAFBEA;
+  color: #1e8449;
+  padding: .7rem 1rem;
+  border-radius: 8px;
+  font-size: .82rem;
+  font-weight: 700;
+}
+
+.btn-outline-blue {
+  background: #fff;
+  border: 1.5px solid var(--blue-light);
+  color: var(--blue-light);
+  border-radius: 999px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  padding: 8px 18px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  font-size: .82rem;
+  transition: background .15s;
+}
+.btn-outline-blue:hover { background: var(--blue-pale); }
+
+/* Albums lijst */
+.album-beheer-row {
+  background: #fff;
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: .8rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+}
+.album-thumb-sm {
+  width: 56px; height: 56px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  border: 0.5px solid var(--border);
+}
+.actie-btn {
+  width: 34px; height: 34px;
+  border-radius: 8px;
+  border: 0.5px solid var(--border);
+  background: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: var(--text-muted);
+  transition: background .15s, color .15s;
+}
+.actie-btn:hover { background: var(--blue-pale); color: var(--blue); }
+.actie-btn.actie-rood:hover { background: #FDEDEC; color: #E24B4A; }
+
+@media (max-width: 480px) {
+  .form-row-2col { grid-template-columns: 1fr; }
+}
+</style>
+
+</body>
+</html>
