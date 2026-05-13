@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home | 102e FOS De Albatros</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="stylesheet" href="css/style.css">
+<script>window.ACTIVE_PAGE='index'; window.ACTIVE_TOPBAR='index';</script>
+<script src="js/components.js"></script>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge"><i class="ti ti-compass"></i>FOS Open Scouting</div>
+    <h1>Avontuur begint<br>bij <span>De Albatros</span></h1>
+    <p>Spelen, vrienden maken, technieken leren en ravotten in Knokke-Heist. Vanaf 5 jaar is iedereen welkom!</p>
+    <div class="hero-btns">
+      <a href="http://www.keeo.fos.be" class="btn-yellow" target="_blank">Lid worden</a>
+      <a href="takken.html" class="btn-outline">Onze takken</a>
+    </div>
+  </div>
+  <div class="hero-logo"><img src="img/logo.png" alt=""></div>
+</div>
+
+<!-- Admin edit bar -->
+<div class="edit-bar" data-permission="canManageEvents">
+  <span><i class="ti ti-shield-check"></i> Eenheidsleiding</span>
+  <button class="edit-bar-btn" onclick="openNieuwsModal()"><i class="ti ti-plus"></i> Nieuwsbericht toevoegen</button>
+  <button class="edit-bar-btn" onclick="window.location.href='kalender.html'"><i class="ti ti-calendar-plus"></i> Evenementen beheren</button>
+</div>
+
+<!-- Nieuws sectie -->
+<div class="section">
+  <div class="section-label">Nieuws</div>
+  <div class="section-title">Wat er beweegt</div>
+  <div class="section-sub">Recente activiteiten en aankondigingen van onze groep.</div>
+  <div id="nieuwsLijst">
+    <div class="home-loading"><i class="ti ti-loader-2 spin"></i> Laden…</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- Takken -->
+<div class="section">
+  <div class="section-label">Onze takken</div>
+  <div class="section-title">Voor elke leeftijd</div>
+  <div class="section-sub">Van 5 jaar tot 18+ — iedereen vindt zijn plek bij De Albatros.</div>
+  <div class="takken-grid">
+    <a href="takken/bevers.html" class="tak-card"><div class="tak-emoji">🦫</div><div class="tak-name">Bevers</div><div class="tak-age">5 – 2e leer</div><div class="tak-stripe" style="background:#E24B4A"></div></a>
+    <a href="takken/welpen.html" class="tak-card"><div class="tak-emoji">🐺</div><div class="tak-name">Welpen</div><div class="tak-age">3e – 5e leer</div><div class="tak-stripe" style="background:#EF9F27"></div></a>
+    <a href="takken/jvg.html"   class="tak-card"><div class="tak-emoji">🌿</div><div class="tak-name">JVG's</div><div class="tak-age">6e leer – 2e mid.</div><div class="tak-stripe" style="background:#2D6A1F"></div></a>
+    <a href="takken/vg.html"    class="tak-card"><div class="tak-emoji">⚜️</div><div class="tak-name">VG's</div><div class="tak-age">3e &amp; 4e mid.</div><div class="tak-stripe" style="background:#1A5276"></div></a>
+    <a href="takken/seniors.html" class="tak-card"><div class="tak-emoji">🔥</div><div class="tak-name">Seniors</div><div class="tak-age">5e middelbaar</div><div class="tak-stripe" style="background:#7F77DD"></div></a>
+    <a href="takken/stam.html"  class="tak-card"><div class="tak-emoji">🏕️</div><div class="tak-name">Stam</div><div class="tak-age">18+</div><div class="tak-stripe" style="background:#5a5a6a"></div></a>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- Kalender -->
+<div class="section">
+  <div class="section-label">Kalender</div>
+  <div class="section-title">Komende activiteiten</div>
+  <div class="section-sub">Hou onze planning in het oog.</div>
+  <div id="homeKalender">
+    <div class="home-loading"><i class="ti ti-loader-2 spin"></i> Laden…</div>
+  </div>
+  <p style="margin-top:.8rem"><a href="kalender.html" style="font-size:.82rem;font-weight:700;color:var(--blue-light);text-decoration:none">Volledige kalender bekijken →</a></p>
+</div>
+
+<div class="divider"></div>
+
+<div class="section">
+  <div class="albatros-banner">
+    <img src="img/logo.png" onerror="this.style.display='none'" alt="">
+    <div style="flex:1"><h2>'t Albatrossertje</h2><p>Ons groepsboekje boordevol info, foto's en nieuws. Lees nu de nieuwste editie!</p>
+    <a href="albatrossertje.html" class="btn-yellow-sm"><i class="ti ti-download"></i> Bekijk hier</a></div>
+  </div>
+</div>
+
+<div class="section" style="padding-top:.5rem">
+  <div class="lid-banner">
+    <div><h2>Word lid van De Albatros!</h2><p>Vanaf 5 jaar kan je meedoen. Iedereen is welkom!</p></div>
+    <a href="http://www.keeo.fos.be" class="btn-blue" target="_blank">Inschrijven</a>
+  </div>
+</div>
+
+<!-- ── Nieuws Modal ── -->
+<div id="nieuwsModal" class="modal" onclick="if(event.target===this)closeNieuwsModal()">
+  <div class="modal-content event-modal-box">
+    <button class="close-btn" onclick="closeNieuwsModal()"><i class="ti ti-x"></i></button>
+    <h2 id="nieuwsModalTitle">Nieuwsbericht toevoegen</h2>
+
+    <div style="display:grid;grid-template-columns:72px 1fr;gap:.8rem">
+      <div class="login-field">
+        <label>Emoji</label>
+        <input type="text" id="nwEmoji" placeholder="📢" maxlength="4">
+      </div>
+      <div class="login-field">
+        <label>Titel</label>
+        <input type="text" id="nwTitel" placeholder="bv. Zomerkamp inschrijvingen open">
+      </div>
+    </div>
+    <div class="login-field">
+      <label>Tekst</label>
+      <input type="text" id="nwTekst" placeholder="Korte beschrijving van het bericht">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem">
+      <div class="login-field">
+        <label>Link URL <span style="font-weight:400;opacity:.6">(optioneel)</span></label>
+        <input type="url" id="nwLinkUrl" placeholder="https://…">
+      </div>
+      <div class="login-field">
+        <label>Link label <span style="font-weight:400;opacity:.6">(optioneel)</span></label>
+        <input type="text" id="nwLinkLabel" placeholder="bv. Inschrijven →">
+      </div>
+    </div>
+    <div class="login-field">
+      <label>Volgorde <span style="font-weight:400;opacity:.6">(lager = bovenaan)</span></label>
+      <input type="number" id="nwVolgorde" placeholder="0" min="0" style="width:100px">
+    </div>
+
+    <div id="nieuwsModalError" class="login-error"></div>
+
+    <div style="display:flex;gap:.6rem;margin-top:.4rem">
+      <button id="nieuwsSaveBtn" class="btn-login-submit" onclick="saveNieuws()" style="flex:1">
+        <i class="ti ti-check"></i> Opslaan
+      </button>
+      <button id="nieuwsDeleteBtn" class="btn-delete" onclick="deleteNieuws()" style="display:none">
+        <i class="ti ti-trash"></i> Verwijderen
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { display: inline-block; animation: spin .8s linear infinite; }
+.home-loading {
+  font-size: .85rem; color: var(--text-muted);
+  display: flex; align-items: center; gap: .5rem; padding: .5rem 0;
+}
+
+/* Nieuws edit knop — alleen zichtbaar als ingelogd */
+.nieuws-edit-btn {
+  display: none;
+  background: none;
+  border: 0.5px solid var(--border);
+  border-radius: 8px;
+  padding: 4px 9px;
+  font-size: .7rem;
+  font-weight: 700;
+  color: var(--blue-light);
+  cursor: pointer;
+  align-items: center;
+  gap: .3rem;
+  flex-shrink: 0;
+  margin-left: auto;
+  transition: background .15s;
+}
+.nieuws-edit-btn:hover { background: var(--blue-pale); }
+body.logged-in .nieuws-edit-btn { display: flex; }
+
+/* Event / nieuws modal box */
+.event-modal-box {
+  background: #fff;
+  border-radius: 20px;
+  width: min(92%, 460px);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: relative;
+  box-shadow: 0 24px 60px rgba(0,0,0,.25);
+  animation: modalSlideIn .2s ease;
+}
+.event-modal-box h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.35rem;
+  color: var(--blue-dark);
+  margin-bottom: -.2rem;
+}
+.btn-delete {
+  background: #FFF0F0;
+  border: 1.5px solid #F5C6C6;
+  color: #C0392B;
+  border-radius: 10px;
+  padding: .75rem 1.2rem;
+  font-family: 'Nunito', sans-serif;
+  font-size: .88rem;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  transition: background .15s;
+}
+.btn-delete:hover { background: #FFE0E0; }
+</style>
+
+<script>
+// ── Helpers ──────────────────────────────────────────────────
+const MAANDEN_HOME = ['Jan','Feb','Mrt','Apr','Mei','Jun','Jul','Aug','Sep','Okt','Nov','Dec'];
+
+function esc(str) {
+  return String(str || '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+async function waitForSb(maxMs = 5000) {
+  const start = Date.now();
+  while (!window.AlbatrosAuth?.supabase) {
+    if (Date.now() - start > maxMs) throw new Error('Supabase niet beschikbaar.');
+    await new Promise(r => setTimeout(r, 100));
+  }
+  return window.AlbatrosAuth.supabase;
+}
+
+// ── Nieuws laden ─────────────────────────────────────────────
+let alleNieuws   = [];
+let nieuwsBewerkId = null;
+
+async function laadNieuws() {
+  const container = document.getElementById('nieuwsLijst');
+  let sb;
+  try { sb = await waitForSb(); } catch(e) {
+    container.innerHTML = '<p style="font-size:.82rem;color:var(--text-muted)">Nieuws kon niet geladen worden.</p>';
+    return;
+  }
+
+  const { data, error } = await sb
+    .from('nieuws')
+    .select('*')
+    .order('volgorde', { ascending: true })
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('[Nieuws]', error);
+    container.innerHTML = '<p style="font-size:.82rem;color:var(--text-muted)">Nieuws kon niet geladen worden.</p>';
+    return;
+  }
+
+  alleNieuws = data || [];
+
+  if (!alleNieuws.length) {
+    container.innerHTML = '<p style="font-size:.82rem;color:var(--text-muted)">Geen nieuws op dit moment.</p>';
+    return;
+  }
+
+  container.innerHTML = alleNieuws.map(n => `
+    <div class="nieuws-card">
+      <div class="nieuws-icon">${esc(n.emoji)}</div>
+      <div style="flex:1">
+        <h3>${esc(n.titel)}</h3>
+        ${n.tekst ? `<p>${esc(n.tekst)}</p>` : ''}
+        ${n.link_url ? `<a href="${esc(n.link_url)}" class="nieuws-link" target="_blank">${esc(n.link_label || 'Meer info →')}</a>` : ''}
+      </div>
+      <button class="nieuws-edit-btn" onclick="openNieuwsModal('${n.id}')">
+        <i class="ti ti-pencil"></i> Bewerken
+      </button>
+    </div>`).join('');
+}
+
+// ── Kalender laden ───────────────────────────────────────────
+async function laadHomeKalender() {
+  const container = document.getElementById('homeKalender');
+  let sb;
+  try { sb = await waitForSb(); } catch(e) {
+    container.innerHTML = '<p style="font-size:.82rem;color:var(--text-muted)">Kon kalender niet laden.</p>';
+    return;
+  }
+
+  const nu = new Date().toISOString().split('T')[0];
+  const { data, error } = await sb
+    .from('evenementen')
+    .select('*')
+    .gte('datum', nu)
+    .order('datum', { ascending: true })
+    .limit(3);
+
+  if (error || !data?.length) {
+    container.innerHTML = '<p style="font-size:.82rem;color:var(--text-muted)">Geen komende activiteiten.</p>';
+    return;
+  }
+
+  container.innerHTML = data.map(ev => {
+    const d   = new Date(ev.datum + 'T00:00:00');
+    const dag = String(d.getDate()).padStart(2, '0');
+    const mnd = MAANDEN_HOME[d.getMonth()];
+    return `
+      <div class="kalender-card">
+        <div class="kal-date"><span class="day">${dag}</span><span class="mon">${mnd}</span></div>
+        <div class="kal-info">
+          <h3>${esc(ev.titel)}</h3>
+          ${ev.beschrijving ? `<p>${esc(ev.beschrijving)}</p>` : ''}
+        </div>
+        <div class="kal-tag">${esc(ev.tak)}</div>
+      </div>`;
+  }).join('');
+}
+
+// ── Nieuws modal ─────────────────────────────────────────────
+function openNieuwsModal(id = null) {
+  nieuwsBewerkId = id;
+  const modal     = document.getElementById('nieuwsModal');
+  const deleteBtn = document.getElementById('nieuwsDeleteBtn');
+  const err       = document.getElementById('nieuwsModalError');
+  err.textContent = '';
+
+  if (id) {
+    const n = alleNieuws.find(x => x.id === id);
+    if (!n) return;
+    document.getElementById('nieuwsModalTitle').textContent  = 'Nieuwsbericht bewerken';
+    document.getElementById('nwEmoji').value      = n.emoji || '';
+    document.getElementById('nwTitel').value      = n.titel || '';
+    document.getElementById('nwTekst').value      = n.tekst || '';
+    document.getElementById('nwLinkUrl').value    = n.link_url || '';
+    document.getElementById('nwLinkLabel').value  = n.link_label || '';
+    document.getElementById('nwVolgorde').value   = n.volgorde ?? 0;
+    deleteBtn.style.display = 'flex';
+  } else {
+    document.getElementById('nieuwsModalTitle').textContent  = 'Nieuwsbericht toevoegen';
+    document.getElementById('nwEmoji').value      = '📢';
+    document.getElementById('nwTitel').value      = '';
+    document.getElementById('nwTekst').value      = '';
+    document.getElementById('nwLinkUrl').value    = '';
+    document.getElementById('nwLinkLabel').value  = '';
+    document.getElementById('nwVolgorde').value   = '';
+    deleteBtn.style.display = 'none';
+  }
+
+  modal.style.display = 'flex';
+  setTimeout(() => document.getElementById('nwTitel')?.focus(), 50);
+}
+
+function closeNieuwsModal() {
+  document.getElementById('nieuwsModal').style.display = 'none';
+  nieuwsBewerkId = null;
+}
+
+async function saveNieuws() {
+  const titel     = document.getElementById('nwTitel').value.trim();
+  const emoji     = document.getElementById('nwEmoji').value.trim() || '📢';
+  const tekst     = document.getElementById('nwTekst').value.trim();
+  const link_url  = document.getElementById('nwLinkUrl').value.trim();
+  const link_label = document.getElementById('nwLinkLabel').value.trim();
+  const volgorde  = parseInt(document.getElementById('nwVolgorde').value) || 0;
+  const btn       = document.getElementById('nieuwsSaveBtn');
+  const err       = document.getElementById('nieuwsModalError');
+
+  err.textContent = '';
+  if (!titel) { err.textContent = 'Vul een titel in.'; return; }
+
+  btn.disabled    = true;
+  btn.textContent = 'Bezig…';
+
+  try {
+    const sb = window.AlbatrosAuth?.supabase;
+    if (!sb) throw new Error('Niet verbonden. Herlaad de pagina.');
+
+    const payload = {
+      titel,
+      emoji,
+      tekst: tekst || null,
+      link_url: link_url || null,
+      link_label: link_label || null,
+      volgorde
+    };
+
+    let error;
+    if (nieuwsBewerkId) {
+      ({ error } = await sb.from('nieuws').update(payload).eq('id', nieuwsBewerkId));
+    } else {
+      ({ error } = await sb.from('nieuws').insert(payload));
+    }
+
+    if (error) throw error;
+    closeNieuwsModal();
+    await laadNieuws();
+  } catch(e) {
+    err.textContent = e.message || 'Opslaan mislukt.';
+  } finally {
+    btn.disabled  = false;
+    btn.innerHTML = '<i class="ti ti-check"></i> Opslaan';
+  }
+}
+
+async function deleteNieuws() {
+  if (!nieuwsBewerkId) return;
+  const n = alleNieuws.find(x => x.id === nieuwsBewerkId);
+  if (!confirm(`"${n?.titel || 'dit bericht'}" verwijderen?`)) return;
+
+  const btn = document.getElementById('nieuwsDeleteBtn');
+  btn.disabled = true;
+
+  try {
+    const sb = window.AlbatrosAuth?.supabase;
+    if (!sb) throw new Error('Niet verbonden.');
+    const { error } = await sb.from('nieuws').delete().eq('id', nieuwsBewerkId);
+    if (error) throw error;
+    closeNieuwsModal();
+    await laadNieuws();
+  } catch(e) {
+    document.getElementById('nieuwsModalError').textContent = e.message || 'Verwijderen mislukt.';
+    btn.disabled = false;
+  }
+}
+
+// Escape sluit modal
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeNieuwsModal();
+  }
+});
+
+// ── Start ────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    laadNieuws();
+    laadHomeKalender();
+  }, 300);
+});
+</script>
+
+</body>
+</html>

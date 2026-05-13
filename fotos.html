@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fotoalbums | 102e FOS De Albatros</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="stylesheet" href="css/style.css">
+<script>window.ACTIVE_PAGE='fotos'; window.ACTIVE_TOPBAR='fotos';</script>
+<script src="js/components.js"></script>
+</head>
+<body>
+
+<!-- Edit bar: enkel voor leiding -->
+<div class="edit-bar" data-permission="canEditAlbums">
+  <span><i class="ti ti-shield-check"></i> Leiding</span>
+  <button class="edit-bar-btn" onclick="window.location.href='beheer/fotos.html'">
+    <i class="ti ti-photo-plus"></i> Albums beheren
+  </button>
+</div>
+
+<div class="page-header">
+  <div class="section-label">Herinneringen</div>
+  <h1>Fotoalbums</h1>
+  <p>Blik terug op onze mooiste avonturen, kampen en activiteiten.</p>
+</div>
+
+<div class="section">
+  <!-- Filterbar -->
+  <div class="foto-filter-bar">
+    <button class="filter-btn active" data-tak="alle">Alle albums</button>
+    <button class="filter-btn" data-tak="bevers">Bevers</button>
+    <button class="filter-btn" data-tak="welpen">Welpen</button>
+    <button class="filter-btn" data-tak="jvg">JVG's</button>
+    <button class="filter-btn" data-tak="vg">VG's</button>
+    <button class="filter-btn" data-tak="seniors">Seniors</button>
+    <button class="filter-btn" data-tak="stam">Stam</button>
+  </div>
+
+  <!-- Loading state -->
+  <div id="albumsLoading" style="text-align:center;padding:3rem;color:var(--text-muted)">
+    <i class="ti ti-loader" style="font-size:2rem;animation:spin 1s linear infinite"></i>
+    <p style="margin-top:.5rem;font-size:.85rem">Albums laden…</p>
+  </div>
+
+  <!-- Error state -->
+  <div id="albumsError" style="display:none;text-align:center;padding:3rem">
+    <i class="ti ti-photo-off" style="font-size:2.5rem;color:var(--text-muted)"></i>
+    <p style="color:var(--text-muted);margin-top:.5rem;font-size:.88rem">Albums konden niet geladen worden. Probeer later opnieuw.</p>
+  </div>
+
+  <!-- Empty state -->
+  <div id="albumsEmpty" style="display:none;text-align:center;padding:3rem">
+    <i class="ti ti-photo-off" style="font-size:2.5rem;color:var(--text-muted)"></i>
+    <p style="color:var(--text-muted);margin-top:.5rem;font-size:.88rem">Geen albums gevonden voor deze tak.</p>
+  </div>
+
+  <!-- Albums grid -->
+  <div class="albums-grid" id="albumsGrid" style="display:none"></div>
+</div>
+
+<script>
+// Wacht tot AlbatrosAuth.supabase beschikbaar is (zelfde patroon als fosshop)
+async function waitForSb(maxMs = 5000) {
+  const t = Date.now();
+  while (!window.AlbatrosAuth?.supabase) {
+    if (Date.now() - t > maxMs) throw new Error('Supabase niet beschikbaar.');
+    await new Promise(r => setTimeout(r, 100));
+  }
+  return window.AlbatrosAuth.supabase;
+}
+
+const TAK_META = {
+  bevers:  { emoji:'🦫', kleur:'#E24B4A', bg:'#FDEDEC', label:'Bevers' },
+  welpen:  { emoji:'🐺', kleur:'#EF9F27', bg:'#FEF9E7', label:'Welpen' },
+  jvg:     { emoji:'🌿', kleur:'#2D6A1F', bg:'#EAFBEA', label:"JVG's" },
+  vg:      { emoji:'⚡', kleur:'#1A5276', bg:'#D6EAF8', label:"VG's" },
+  seniors: { emoji:'🔥', kleur:'#7F77DD', bg:'#EAE8FF', label:'Seniors' },
+  stam:    { emoji:'🏕️', kleur:'#5a5a6a', bg:'#EAECEE', label:'Stam' },
+  alle:    { emoji:'🌟', kleur:'#0F3260', bg:'#D6EAF8', label:'Alle takken' },
+};
+
+let alleAlbums = [];
+let activeTak = 'alle';
+
+async function laadAlbums() {
+  document.getElementById('albumsLoading').style.display = 'block';
+  document.getElementById('albumsGrid').style.display = 'none';
+  document.getElementById('albumsError').style.display = 'none';
+  document.getElementById('albumsEmpty').style.display = 'none';
+
+  let sb;
+  try { sb = await waitForSb(); } catch(e) {
+    document.getElementById('albumsLoading').style.display = 'none';
+    document.getElementById('albumsError').style.display = 'block';
+    return;
+  }
+
+  try {
+    const isLoggedIn = window.AlbatrosAuth?.isLoggedIn?.() || false;
+    let query = sb.from('albums').select('*').order('datum', { ascending: false });
+    if (!isLoggedIn) query = query.eq('openbaar', true);
+
+    const { data, error } = await query;
+    if (error) throw error;
+    alleAlbums = data || [];
+    toonAlbums(activeTak);
+  } catch (e) {
+    console.error('Albums laden mislukt:', e);
+    document.getElementById('albumsLoading').style.display = 'none';
+    document.getElementById('albumsError').style.display = 'block';
+  }
+}
+
+function toonAlbums(tak) {
+  activeTak = tak;
+  const gefilterd = tak === 'alle'
+    ? alleAlbums
+    : alleAlbums.filter(a => a.tak === tak || a.tak === 'alle');
+
+  document.getElementById('albumsLoading').style.display = 'none';
+
+  if (gefilterd.length === 0) {
+    document.getElementById('albumsGrid').style.display = 'none';
+    document.getElementById('albumsEmpty').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('albumsEmpty').style.display = 'none';
+  const grid = document.getElementById('albumsGrid');
+  grid.style.display = 'grid';
+
+  grid.innerHTML = gefilterd.map(album => {
+    const meta = TAK_META[album.tak] || TAK_META.alle;
+    const datum = new Date(album.datum).toLocaleDateString('nl-BE', { month:'long', year:'numeric' });
+    const thumbStyle = album.cover_url
+      ? `background:url('${album.cover_url}') center/cover no-repeat`
+      : `background:${meta.bg}`;
+
+    const klikAttr = album.drive_link
+      ? `href="${escapeHtml(album.drive_link)}" target="_blank" rel="noopener noreferrer"`
+      : `href="#" onclick="return false;" style="cursor:default"`;
+
+    return `
+      <a class="album-card" data-tak="${album.tak}" ${klikAttr}>
+        <div class="album-thumb" style="${thumbStyle}">
+          ${!album.cover_url ? `<span>${meta.emoji}</span>` : ''}
+          ${!album.openbaar ? '<span class="album-badge" style="background:#E24B4A;right:.6rem;left:auto">Privé</span>' : ''}
+        </div>
+        <div class="album-info">
+          <h3>${escapeHtml(album.titel)}</h3>
+          <p>${datum}${album.beschrijving ? ' · ' + escapeHtml(album.beschrijving).substring(0,50) + (album.beschrijving.length > 50 ? '…' : '') : ''}</p>
+          <div class="album-meta">
+            <span class="album-tak" style="background:${meta.bg};color:${meta.kleur}">${meta.label}</span>
+            ${album.drive_link
+              ? '<span class="album-count"><i class="ti ti-external-link"></i> Bekijk album</span>'
+              : '<span class="album-count" style="color:#bbb"><i class="ti ti-clock"></i> Binnenkort beschikbaar</span>'}
+          </div>
+        </div>
+      </a>`;
+  }).join('');
+}
+
+function escapeHtml(str) {
+  return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Filterbar
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    if (alleAlbums.length > 0) {
+      toonAlbums(btn.dataset.tak);
+    }
+  });
+});
+
+// Start direct — waitForSb() pollt tot auth.js klaar is
+laadAlbums();
+
+// Herlaad albums na in- of uitloggen (voor privé-albums)
+document.addEventListener('albatros-auth-ready', () => {
+  if (alleAlbums.length > 0) laadAlbums(); // enkel herladen als al geladen was
+});
+</script>
+
+<style>
+@keyframes spin { to { transform: rotate(360deg); } }
+.albums-grid {
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+.album-card {
+  background: #fff;
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+  transition: box-shadow .2s, transform .15s;
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.album-card:hover {
+  box-shadow: 0 8px 24px rgba(26,82,118,.13);
+  transform: translateY(-3px);
+}
+.album-thumb {
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.album-thumb span:first-child {}
+.album-badge {
+  position: absolute;
+  top: .6rem;
+  left: .6rem;
+  background: var(--yellow);
+  color: var(--blue-dark);
+  font-size: .65rem;
+  font-weight: 900;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+.album-info { padding: .9rem 1rem; }
+.album-info h3 { font-size: .88rem; font-weight: 900; margin-bottom: .2rem; }
+.album-info p  { font-size: .75rem; color: var(--text-muted); margin-bottom: .5rem; }
+.album-meta { display: flex; align-items: center; justify-content: space-between; }
+.album-tak  { font-size: .65rem; font-weight: 700; padding: 2px 9px; border-radius: 999px; }
+.album-count { font-size: .72rem; color: var(--text-muted); display: flex; align-items: center; gap: .2rem; }
+</style>
+
+</body>
+</html>

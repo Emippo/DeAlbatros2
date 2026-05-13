@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>'t Albatrossertje | 102e FOS De Albatros</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="stylesheet" href="css/style.css">
+<script>window.ACTIVE_PAGE='albatrossertje';</script>
+<script src="js/components.js"></script>
+</head>
+<body>
+
+<!-- Edit bar voor eenheidsleiding -->
+<div class="edit-bar" data-permission="canManageEvents">
+  <span><i class="ti ti-shield-check"></i> Eenheidsleiding</span>
+  <button class="edit-bar-btn" onclick="openEditionModal()"><i class="ti ti-upload"></i> Nieuwe editie toevoegen</button>
+</div>
+
+<div class="page-header">
+  <div class="section-label">Groepsboekje</div>
+  <h1>'t Albatrossertje</h1>
+  <p>Ons groepsboekje boordevol info, foto's en nieuws van de groep.</p>
+</div>
+
+<div class="section">
+
+  <!-- Nieuwste editie banner — dynamisch -->
+  <div id="nieuwsteEditieBanner" style="margin-bottom:1.5rem">
+    <div class="home-loading"><i class="ti ti-loader-2 spin"></i> Laden…</div>
+  </div>
+
+  <!-- Info blok -->
+  <div style="background:#fff;border:0.5px solid var(--border);border-radius:var(--radius);padding:1.3rem;margin-bottom:1rem">
+    <h3 style="font-size:.92rem;font-weight:900;margin-bottom:.6rem">Wat is 't Albatrossertje?</h3>
+    <p style="font-size:.82rem;color:var(--text-muted);line-height:1.7">
+      Aan het begin van elke maand komt er een nieuw Albatrossertje uit met alle benodigde informatie. Het staat vol met info, maar ook met foto's en leuke scoutsweetjes, dus zeker niet te missen!
+    </p>
+  </div>
+
+  <!-- Vorige edities — dynamisch -->
+  <div style="background:#fff;border:0.5px solid var(--border);border-radius:var(--radius);padding:1.3rem;margin-bottom:1rem">
+    <h3 style="font-size:.95rem;font-weight:900;margin-bottom:.8rem">Vorige edities</h3>
+    <div id="vorigeEditiesLijst">
+      <div class="home-loading"><i class="ti ti-loader-2 spin"></i> Laden…</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Editie Modal ── -->
+<div id="editieModal" class="modal" onclick="if(event.target===this)closeEditionModal()">
+  <div class="modal-content event-modal-box">
+    <button class="close-btn" onclick="closeEditionModal()"><i class="ti ti-x"></i></button>
+    <h2 id="editieModalTitle">Nieuwe editie toevoegen</h2>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem">
+      <div class="login-field">
+        <label>Maand <span style="font-weight:400;opacity:.6">(1–12)</span></label>
+        <input type="number" id="edMaand" min="1" max="12" placeholder="5">
+      </div>
+      <div class="login-field">
+        <label>Jaar</label>
+        <input type="number" id="edJaar" min="2020" max="2099" placeholder="2026">
+      </div>
+    </div>
+
+    <div class="login-field">
+      <label>URL (Google Drive link)</label>
+      <input type="url" id="edUrl" placeholder="https://drive.google.com/file/d/…/view">
+    </div>
+
+    <div id="editieModalError" class="login-error"></div>
+
+    <div style="display:flex;gap:.6rem;margin-top:.4rem">
+      <button id="editieSaveBtn" class="btn-login-submit" onclick="saveEditie()" style="flex:1">
+        <i class="ti ti-check"></i> Opslaan
+      </button>
+      <button id="editieDeleteBtn" class="btn-delete" onclick="deleteEditie()" style="display:none">
+        <i class="ti ti-trash"></i> Verwijderen
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { display: inline-block; animation: spin .8s linear infinite; }
+.home-loading {
+  font-size: .85rem; color: var(--text-muted);
+  display: flex; align-items: center; gap: .5rem; padding: .5rem 0;
+}
+.editie-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .6rem .8rem;
+  background: var(--cream);
+  border-radius: 8px;
+  transition: background .15s;
+}
+.editie-row:hover { background: var(--blue-pale); }
+.editie-edit-btn {
+  display: none;
+  background: none;
+  border: 0.5px solid var(--border);
+  border-radius: 8px;
+  padding: 4px 9px;
+  font-size: .7rem;
+  font-weight: 700;
+  color: var(--blue-light);
+  cursor: pointer;
+  align-items: center;
+  gap: .3rem;
+  flex-shrink: 0;
+  margin-left: .5rem;
+  transition: background .15s;
+}
+.editie-edit-btn:hover { background: var(--blue-pale); }
+body.logged-in .editie-edit-btn { display: flex; }
+.event-modal-box {
+  background: #fff;
+  border-radius: 20px;
+  width: min(92%, 460px);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: relative;
+  box-shadow: 0 24px 60px rgba(0,0,0,.25);
+  animation: modalSlideIn .2s ease;
+}
+.event-modal-box h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.35rem;
+  color: var(--blue-dark);
+  margin-bottom: -.2rem;
+}
+.btn-delete {
+  background: #FFF0F0;
+  border: 1.5px solid #F5C6C6;
+  color: #C0392B;
+  border-radius: 10px;
+  padding: .75rem 1.2rem;
+  font-family: 'Nunito', sans-serif;
+  font-size: .88rem;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  transition: background .15s;
+}
+.btn-delete:hover { background: #FFE0E0; }
+@keyframes modalSlideIn { from { transform: translateY(20px); opacity: 0; } to { transform: none; opacity: 1; } }
+</style>
+
+<script>
+const MAANDEN_NL = ['januari','februari','maart','april','mei','juni',
+                    'juli','augustus','september','oktober','november','december'];
+
+let alleEdities = [];
+let editieBewerkId = null;
+
+function esc(str) {
+  return String(str || '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+async function waitForSb(maxMs = 5000) {
+  const start = Date.now();
+  while (!window.AlbatrosAuth?.supabase) {
+    if (Date.now() - start > maxMs) throw new Error('Supabase niet beschikbaar.');
+    await new Promise(r => setTimeout(r, 100));
+  }
+  return window.AlbatrosAuth.supabase;
+}
+
+async function laadEdities() {
+  let sb;
+  try { sb = await waitForSb(); } catch(e) {
+    document.getElementById('nieuwsteEditieBanner').innerHTML = '<p style="font-size:.82rem;color:var(--text-muted)">Edities konden niet geladen worden.</p>';
+    document.getElementById('vorigeEditiesLijst').innerHTML = '';
+    return;
+  }
+
+  const { data, error } = await sb
+    .from('albatrossertje')
+    .select('*')
+    .order('jaar', { ascending: false })
+    .order('maand', { ascending: false });
+
+  if (error || !data?.length) {
+    document.getElementById('nieuwsteEditieBanner').innerHTML = '<p style="font-size:.82rem;color:var(--text-muted)">Nog geen edities beschikbaar.</p>';
+    document.getElementById('vorigeEditiesLijst').innerHTML = '<p style="font-size:.82rem;color:var(--text-muted)">Geen vorige edities.</p>';
+    return;
+  }
+
+  alleEdities = data;
+  const nieuwste = data[0];
+  const vorige   = data.slice(1);
+
+  // Banner nieuwste editie
+  const maandLabel = MAANDEN_NL[nieuwste.maand - 1];
+  const maandKort  = maandLabel.charAt(0).toUpperCase() + maandLabel.slice(1);
+  document.getElementById('nieuwsteEditieBanner').innerHTML = `
+    <div class="albatros-banner">
+      <img src="img/logo.png" onerror="this.style.display='none'" alt="">
+      <div style="flex:1">
+        <h2>Nieuwste editie — ${maandKort} ${nieuwste.jaar}</h2>
+        <p>Bekijk hier de meest recente versie. Boordevol nieuws, foto's en info over onze eenheid!</p>
+        <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap">
+          <a href="${esc(nieuwste.url)}" class="btn-yellow-sm" target="_blank">
+            <i class="ti ti-download"></i> Bekijk Hier
+          </a>
+          <button class="editie-edit-btn" onclick="openEditionModal('${nieuwste.id}')">
+            <i class="ti ti-pencil"></i> Bewerken
+          </button>
+        </div>
+      </div>
+    </div>`;
+
+  // Vorige edities
+  if (!vorige.length) {
+    document.getElementById('vorigeEditiesLijst').innerHTML = '<p style="font-size:.82rem;color:var(--text-muted)">Geen vorige edities.</p>';
+    return;
+  }
+
+  document.getElementById('vorigeEditiesLijst').innerHTML =
+    `<div style="display:flex;flex-direction:column;gap:.5rem">` +
+    vorige.map(e => {
+      const ml = MAANDEN_NL[e.maand - 1];
+      const mk = ml.charAt(0).toUpperCase() + ml.slice(1);
+      return `
+        <div class="editie-row">
+          <div style="display:flex;align-items:center;gap:.6rem">
+            <i class="ti ti-file-text" style="color:var(--blue-light)"></i>
+            <span style="font-size:.83rem;font-weight:700">Albatrossertje ${mk} ${e.jaar}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:.4rem">
+            <a href="${esc(e.url)}" style="font-size:.73rem;font-weight:700;color:var(--blue-light);text-decoration:none;display:flex;align-items:center;gap:.3rem" target="_blank">
+              <i class="ti ti-download"></i> Download
+            </a>
+            <button class="editie-edit-btn" onclick="openEditionModal('${e.id}')">
+              <i class="ti ti-pencil"></i>
+            </button>
+          </div>
+        </div>`;
+    }).join('') + `</div>`;
+}
+
+// ── Modal ────────────────────────────────────────────────────
+function openEditionModal(id = null) {
+  editieBewerkId = id;
+  const modal     = document.getElementById('editieModal');
+  const deleteBtn = document.getElementById('editieDeleteBtn');
+  const err       = document.getElementById('editieModalError');
+  err.textContent = '';
+
+  if (id) {
+    const e = alleEdities.find(x => x.id === id);
+    if (!e) return;
+    document.getElementById('editieModalTitle').textContent = 'Editie bewerken';
+    document.getElementById('edMaand').value = e.maand;
+    document.getElementById('edJaar').value  = e.jaar;
+    document.getElementById('edUrl').value   = e.url;
+    deleteBtn.style.display = 'flex';
+  } else {
+    document.getElementById('editieModalTitle').textContent = 'Nieuwe editie toevoegen';
+    document.getElementById('edMaand').value = new Date().getMonth() + 1;
+    document.getElementById('edJaar').value  = new Date().getFullYear();
+    document.getElementById('edUrl').value   = '';
+    deleteBtn.style.display = 'none';
+  }
+
+  modal.style.display = 'flex';
+  setTimeout(() => document.getElementById('edMaand')?.focus(), 50);
+}
+
+function closeEditionModal() {
+  document.getElementById('editieModal').style.display = 'none';
+  editieBewerkId = null;
+}
+
+async function saveEditie() {
+  const maand = parseInt(document.getElementById('edMaand').value);
+  const jaar  = parseInt(document.getElementById('edJaar').value);
+  const url   = document.getElementById('edUrl').value.trim();
+  const btn   = document.getElementById('editieSaveBtn');
+  const err   = document.getElementById('editieModalError');
+
+  err.textContent = '';
+  if (!maand || maand < 1 || maand > 12) { err.textContent = 'Vul een geldige maand in (1–12).'; return; }
+  if (!jaar  || jaar < 2020)             { err.textContent = 'Vul een geldig jaar in.'; return; }
+  if (!url)                              { err.textContent = 'Vul de Google Drive URL in.'; return; }
+
+  btn.disabled    = true;
+  btn.textContent = 'Bezig…';
+
+  try {
+    const sb = window.AlbatrosAuth?.supabase;
+    if (!sb) throw new Error('Niet verbonden. Herlaad de pagina.');
+
+    const payload = { maand, jaar, url };
+    let error;
+
+    if (editieBewerkId) {
+      ({ error } = await sb.from('albatrossertje').update(payload).eq('id', editieBewerkId));
+    } else {
+      ({ error } = await sb.from('albatrossertje').insert(payload));
+    }
+
+    if (error) throw error;
+    closeEditionModal();
+    await laadEdities();
+  } catch(e) {
+    err.textContent = e.message || 'Opslaan mislukt.';
+  } finally {
+    btn.disabled  = false;
+    btn.innerHTML = '<i class="ti ti-check"></i> Opslaan';
+  }
+}
+
+async function deleteEditie() {
+  if (!editieBewerkId) return;
+  const e = alleEdities.find(x => x.id === editieBewerkId);
+  const maandLabel = e ? MAANDEN_NL[e.maand - 1] : '';
+  if (!confirm(`Editie "${maandLabel} ${e?.jaar || ''}" verwijderen?`)) return;
+
+  const btn = document.getElementById('editieDeleteBtn');
+  btn.disabled = true;
+
+  try {
+    const sb = window.AlbatrosAuth?.supabase;
+    if (!sb) throw new Error('Niet verbonden.');
+    const { error } = await sb.from('albatrossertje').delete().eq('id', editieBewerkId);
+    if (error) throw error;
+    closeEditionModal();
+    await laadEdities();
+  } catch(e) {
+    document.getElementById('editieModalError').textContent = e.message || 'Verwijderen mislukt.';
+    btn.disabled = false;
+  }
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeEditionModal();
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(laadEdities, 300);
+});
+</script>
+
+</body>
+</html>

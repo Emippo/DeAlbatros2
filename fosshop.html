@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FOS-shop | 102e FOS De Albatros</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="stylesheet" href="css/style.css">
+<script>window.ACTIVE_PAGE='fosshop';</script>
+<script src="js/components.js"></script>
+</head>
+<body>
+
+<!-- Edit bar -->
+<div class="edit-bar" data-permission="canManageEvents">
+  <span><i class="ti ti-shield-check"></i> Eenheidsleiding / FOS - Shop </span>
+  <button class="edit-bar-btn" onclick="openProductModal()"><i class="ti ti-plus"></i> Product toevoegen</button>
+</div>
+
+<div class="page-header">
+  <div class="section-label">Onze winkel</div>
+  <h1>FOS-shop</h1>
+  <p>Uniform, kledij en ander materiaal van 102e FOS De Albatros.</p>
+</div>
+
+<!-- Info banner -->
+<div style="background:var(--blue-pale);padding:.9rem 2rem;display:flex;align-items:center;gap:.7rem;flex-wrap:wrap">
+  <i class="ti ti-info-circle" style="color:var(--blue-light);font-size:1.1rem;flex-shrink:0"></i>
+  <p style="font-size:.82rem;color:var(--blue-dark);flex:1">
+    Aankopen kunnen ter plaatse na de activiteiten. Voor vragen:
+    <a href="mailto:fosshop@dealbatros.be" style="color:var(--blue);font-weight:700">fosshop@dealbatros.be</a>.
+    Betaling via overschrijving of cash.
+  </p>
+  <a href="https://fosshop.be" class="btn-blue" target="_blank" style="font-size:.8rem;padding:7px 16px;white-space:nowrap">
+    <i class="ti ti-external-link"></i> Officiële FOS-shop
+  </a>
+</div>
+
+<!-- Producten worden hier ingeladen -->
+<div id="shopInhoud">
+  <div class="section">
+    <div class="home-loading"><i class="ti ti-loader-2 spin"></i> Producten laden…</div>
+  </div>
+</div>
+
+<!-- ── Product Modal ── -->
+<div id="productModal" class="modal" onclick="if(event.target===this)closeProductModal()">
+  <div class="modal-content product-modal-box">
+    <button class="close-btn" onclick="closeProductModal()"><i class="ti ti-x"></i></button>
+    <h2 id="productModalTitle">Product toevoegen</h2>
+
+    <!-- Foto preview + upload -->
+    <div class="foto-upload-zone" id="fotoUploadZone" onclick="document.getElementById('fotoInput').click()">
+      <div id="fotoPreview" class="foto-preview-inner">
+        <i class="ti ti-photo-plus"></i>
+        <span>Klik om foto te uploaden</span>
+        <small>JPG, PNG of WEBP · max 10MB</small>
+      </div>
+      <input type="file" id="fotoInput" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="handleFotoKeuze(event)">
+    </div>
+
+    <!-- Emoji fallback (toont als er geen foto is) -->
+    <div class="login-field" id="emojiFeld">
+      <label>Emoji <span style="font-weight:400;opacity:.6">(gebruikt als er geen foto is)</span></label>
+      <input type="text" id="prEmoji" placeholder="📦" maxlength="4" style="width:80px">
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr auto;gap:.8rem;align-items:end">
+      <div class="login-field" style="margin:0">
+        <label>Naam</label>
+        <input type="text" id="prNaam" placeholder="bv. FOS-hemd">
+      </div>
+      <div class="login-field" style="margin:0">
+        <label>Prijs (€)</label>
+        <input type="number" id="prPrijs" placeholder="22" min="0" step="0.01" style="width:90px">
+      </div>
+    </div>
+
+    <div class="login-field">
+      <label>Beschrijving</label>
+      <input type="text" id="prBeschrijving" placeholder="Korte omschrijving van het product">
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem">
+      <div class="login-field">
+        <label>Categorie</label>
+        <select id="prCategorie" class="ev-select">
+          <option value="uniform">Uniform (verplicht)</option>
+          <option value="extra">Extra / accessoires</option>
+        </select>
+      </div>
+      <div class="login-field">
+        <label>Badge label <span style="font-weight:400;opacity:.6">(optioneel)</span></label>
+        <input type="text" id="prBadge" placeholder="bv. Bevers">
+      </div>
+    </div>
+
+    <div class="login-field">
+      <label>Maten <span style="font-weight:400;opacity:.6">(komma-gescheiden, optioneel)</span></label>
+      <input type="text" id="prMaten" placeholder="bv. XS, S, M, L, XL">
+    </div>
+
+    <div class="login-field">
+      <label>Volgorde <span style="font-weight:400;opacity:.6">(lager = eerder)</span></label>
+      <input type="number" id="prVolgorde" placeholder="0" min="0" style="width:100px">
+    </div>
+
+    <div id="productModalError" class="login-error"></div>
+    <div id="uploadVoortgang" style="display:none;font-size:.8rem;color:var(--blue-light);display:flex;align-items:center;gap:.4rem">
+      <i class="ti ti-loader-2 spin"></i> Foto uploaden…
+    </div>
+
+    <div style="display:flex;gap:.6rem;margin-top:.4rem">
+      <button id="productSaveBtn" class="btn-login-submit" onclick="saveProduct()" style="flex:1">
+        <i class="ti ti-check"></i> Opslaan
+      </button>
+      <button id="productDeleteBtn" class="btn-delete" onclick="deleteProduct()" style="display:none">
+        <i class="ti ti-trash"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { display: inline-block; animation: spin .8s linear infinite; }
+.home-loading { font-size:.85rem; color:var(--text-muted); display:flex; align-items:center; gap:.5rem; padding:.5rem 0; }
+
+/* Shop grid */
+.shop-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:1rem; }
+.shop-card { background:#fff; border:0.5px solid var(--border); border-radius:var(--radius); overflow:hidden; transition:box-shadow .2s,transform .15s; position:relative; }
+.shop-card:hover { box-shadow:0 8px 24px rgba(26,82,118,.12); transform:translateY(-3px); }
+.shop-thumb { height:140px; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+.shop-thumb img { width:100%; height:100%; object-fit:cover; }
+.shop-thumb .thumb-emoji { font-size:3rem; }
+.shop-info { padding:.9rem 1rem; }
+.shop-info h3 { font-size:.9rem; font-weight:900; margin-bottom:.25rem; }
+.shop-info p { font-size:.78rem; color:var(--text-muted); line-height:1.5; margin-bottom:.6rem; }
+.shop-meta { display:flex; align-items:center; justify-content:space-between; margin-bottom:.5rem; }
+.shop-badge { font-size:.65rem; font-weight:700; padding:2px 9px; border-radius:999px; background:var(--blue-pale); color:var(--blue); }
+.shop-badge.required { background:#FDEBD0; color:#C0392B; }
+.shop-price { font-size:.9rem; font-weight:900; color:var(--blue-dark); }
+.shop-sizes { display:flex; gap:.3rem; flex-wrap:wrap; }
+.shop-sizes span { font-size:.65rem; font-weight:700; padding:2px 8px; border:1px solid var(--border); border-radius:4px; color:var(--text-muted); }
+
+/* Edit knop op kaart */
+.shop-edit-btn {
+  display: none;
+  position: absolute;
+  top: 8px; right: 8px;
+  background: rgba(255,255,255,.92);
+  border: 0.5px solid var(--border);
+  border-radius: 8px;
+  padding: 4px 9px;
+  font-size: .7rem; font-weight: 700;
+  color: var(--blue-light);
+  cursor: pointer;
+  align-items: center; gap: .3rem;
+  backdrop-filter: blur(4px);
+  transition: background .15s;
+}
+.shop-edit-btn:hover { background: var(--blue-pale); }
+body.logged-in .shop-edit-btn { display: flex; }
+
+/* Product modal */
+.product-modal-box {
+  background: #fff; border-radius: 20px;
+  width: min(94%, 500px); max-height: 90vh; overflow-y: auto;
+  padding: 2rem; display: flex; flex-direction: column; gap: .9rem;
+  position: relative; box-shadow: 0 24px 60px rgba(0,0,0,.25);
+  animation: modalSlideIn .2s ease;
+}
+.product-modal-box h2 { font-family:'Playfair Display',serif; font-size:1.3rem; color:var(--blue-dark); }
+
+/* Foto upload zone */
+.foto-upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color .15s, background .15s;
+  min-height: 120px;
+  display: flex; align-items: center; justify-content: center;
+}
+.foto-upload-zone:hover { border-color: var(--blue-light); background: var(--blue-pale); }
+.foto-preview-inner {
+  display: flex; flex-direction: column; align-items: center; gap: .3rem;
+  padding: 1.5rem; color: var(--text-muted); text-align: center;
+}
+.foto-preview-inner i { font-size: 2rem; color: var(--blue-light); }
+.foto-preview-inner span { font-size: .83rem; font-weight: 700; }
+.foto-preview-inner small { font-size: .72rem; }
+.foto-upload-zone img { width: 100%; height: 160px; object-fit: cover; display: block; }
+
+.ev-select {
+  padding:.75rem 1rem; border:1.5px solid var(--border); border-radius:10px;
+  font-family:'Nunito',sans-serif; font-size:.9rem; outline:none; background:#fff;
+  color:var(--text); cursor:pointer; width:100%;
+  transition: border-color .15s;
+}
+.ev-select:focus { border-color: var(--blue-light); }
+
+.btn-delete {
+  background:#FFF0F0; border:1.5px solid #F5C6C6; color:#C0392B;
+  border-radius:10px; padding:.75rem 1.2rem; font-family:'Nunito',sans-serif;
+  font-size:.88rem; font-weight:900; cursor:pointer;
+  display:flex; align-items:center; gap:.4rem; transition:background .15s;
+}
+.btn-delete:hover { background:#FFE0E0; }
+
+.event-modal-box {
+  background:#fff; border-radius:20px; width:min(92%,460px); padding:2rem;
+  display:flex; flex-direction:column; gap:1rem; position:relative;
+  box-shadow:0 24px 60px rgba(0,0,0,.25); animation:modalSlideIn .2s ease;
+}
+</style>
+
+<script>
+// ── State ────────────────────────────────────────────────────
+let alleProducten   = [];
+let productBewerkId = null;
+let gekozenFotoFile = null;   // File object van de gekozen foto
+let bestaandeFotoUrl = null;  // Huidige foto URL bij bewerken
+
+const STORAGE_BUCKET = 'shop-fotos'; // maak dit aan in Supabase Storage
+
+// ── Helpers ──────────────────────────────────────────────────
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+async function waitForSb(maxMs = 5000) {
+  const t = Date.now();
+  while (!window.AlbatrosAuth?.supabase) {
+    if (Date.now()-t > maxMs) throw new Error('Supabase niet beschikbaar.');
+    await new Promise(r => setTimeout(r, 100));
+  }
+  return window.AlbatrosAuth.supabase;
+}
+
+// ── Producten laden & renderen ───────────────────────────────
+async function laadProducten() {
+  const container = document.getElementById('shopInhoud');
+  let sb;
+  try { sb = await waitForSb(); } catch(e) {
+    container.innerHTML = '<div class="section"><p style="color:var(--text-muted);font-size:.85rem">Producten konden niet geladen worden.</p></div>';
+    return;
+  }
+
+  const { data, error } = await sb
+    .from('shop_producten')
+    .select('*')
+    .eq('actief', true)
+    .order('volgorde', { ascending: true });
+
+  if (error) {
+    console.error('[Shop]', error);
+    container.innerHTML = '<div class="section"><p style="color:var(--text-muted);font-size:.85rem">Producten konden niet geladen worden.</p></div>';
+    return;
+  }
+
+  alleProducten = data || [];
+  renderProducten();
+}
+
+function renderProducten() {
+  const container = document.getElementById('shopInhoud');
+  const uniform = alleProducten.filter(p => p.categorie === 'uniform');
+  const extra   = alleProducten.filter(p => p.categorie === 'extra');
+
+  let html = '';
+
+  if (uniform.length) {
+    html += `
+      <div class="section">
+        <div class="section-label">Verplicht</div>
+        <div class="section-title">Uniform</div>
+        <div class="section-sub">Elk lid draagt het FOS-uniform bij activiteiten.</div>
+        <div class="shop-grid">${uniform.map(renderKaart).join('')}</div>
+      </div>
+      <div class="divider"></div>`;
+  }
+
+  if (extra.length) {
+    html += `
+      <div class="section">
+        <div class="section-label">Extra</div>
+        <div class="section-title">Groepskledij &amp; accessoires</div>
+        <div class="section-sub">Optioneel maar populair bij onze leden.</div>
+        <div class="shop-grid">${extra.map(renderKaart).join('')}</div>
+      </div>
+      <div class="divider"></div>`;
+  }
+
+  if (!html) {
+    html = '<div class="section"><p style="font-size:.85rem;color:var(--text-muted)">Geen producten gevonden.</p></div>';
+  }
+
+  container.innerHTML = html;
+}
+
+function renderKaart(p) {
+  // Thumbnail: foto als beschikbaar, anders emoji
+  const thumb = p.foto_url
+    ? `<img src="${esc(p.foto_url)}" alt="${esc(p.naam)}" loading="lazy">`
+    : `<span class="thumb-emoji">${esc(p.emoji || '📦')}</span>`;
+
+  // Badge
+  let badgeHtml = '';
+  if (p.badge_label) {
+    if (p.badge_label === 'Verplicht') {
+      badgeHtml = `<span class="shop-badge required">Verplicht</span>`;
+    } else if (p.badge_kleur && p.badge_kleur.includes('|')) {
+      const [bg, fg] = p.badge_kleur.split('|');
+      badgeHtml = `<span class="shop-badge" style="background:${esc(bg)};color:${esc(fg)}">${esc(p.badge_label)}</span>`;
+    } else {
+      badgeHtml = `<span class="shop-badge">${esc(p.badge_label)}</span>`;
+    }
+  }
+
+  // Maten
+  const matenHtml = (p.maten && p.maten.length)
+    ? `<div class="shop-sizes">${p.maten.map(m => `<span>${esc(m)}</span>`).join('')}</div>`
+    : '';
+
+  return `
+    <div class="shop-card">
+      <div class="shop-thumb">${thumb}</div>
+      <button class="shop-edit-btn" onclick="openProductModal('${p.id}')">
+        <i class="ti ti-pencil"></i> Bewerken
+      </button>
+      <div class="shop-info">
+        <h3>${esc(p.naam)}</h3>
+        ${p.beschrijving ? `<p>${esc(p.beschrijving)}</p>` : ''}
+        <div class="shop-meta">
+          ${badgeHtml}
+          <span class="shop-price">€ ${Number(p.prijs).toFixed(2).replace('.',',')}</span>
+        </div>
+        ${matenHtml}
+      </div>
+    </div>`;
+}
+
+// ── Foto kiezen ──────────────────────────────────────────────
+function handleFotoKeuze(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  if (file.size > 10 * 1024 * 1024) {
+    alert('Foto is te groot. Maximaal 10MB toegestaan.');
+    event.target.value = '';
+    return;
+  }
+
+  gekozenFotoFile = file;
+
+  // Toon preview
+  const reader = new FileReader();
+  reader.onload = e => {
+    const zone = document.getElementById('fotoUploadZone');
+    zone.innerHTML = `
+      <img src="${e.target.result}" alt="Preview" style="width:100%;height:160px;object-fit:cover;display:block;border-radius:10px">
+      <input type="file" id="fotoInput" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="handleFotoKeuze(event)">`;
+    // Klik opnieuw mogelijk maken
+    zone.onclick = () => document.getElementById('fotoInput').click();
+  };
+  reader.readAsDataURL(file);
+}
+
+async function uploadFoto(sb, file, productId) {
+  const ext  = file.name.split('.').pop().toLowerCase();
+  const path = `${productId}.${ext}`;
+
+  const { error } = await sb.storage
+    .from(STORAGE_BUCKET)
+    .upload(path, file, { upsert: true, contentType: file.type });
+
+  if (error) throw error;
+
+  const { data } = sb.storage.from(STORAGE_BUCKET).getPublicUrl(path);
+  return data.publicUrl + '?t=' + Date.now(); // cache-bust
+}
+
+// ── Modal openen ─────────────────────────────────────────────
+function openProductModal(id = null) {
+  productBewerkId  = id;
+  gekozenFotoFile  = null;
+  bestaandeFotoUrl = null;
+
+  const deleteBtn = document.getElementById('productDeleteBtn');
+  const err       = document.getElementById('productModalError');
+  err.textContent = '';
+
+  // Reset foto zone
+  document.getElementById('fotoUploadZone').innerHTML = `
+    <div id="fotoPreview" class="foto-preview-inner">
+      <i class="ti ti-photo-plus"></i>
+      <span>Klik om foto te uploaden</span>
+      <small>JPG, PNG of WEBP · max 10MB</small>
+    </div>
+    <input type="file" id="fotoInput" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="handleFotoKeuze(event)">`;
+  document.getElementById('fotoUploadZone').onclick = () => document.getElementById('fotoInput').click();
+
+  if (id) {
+    const p = alleProducten.find(x => x.id === id);
+    if (!p) return;
+    document.getElementById('productModalTitle').textContent = 'Product bewerken';
+    document.getElementById('prNaam').value          = p.naam || '';
+    document.getElementById('prEmoji').value         = p.emoji || '';
+    document.getElementById('prPrijs').value         = p.prijs || '';
+    document.getElementById('prBeschrijving').value  = p.beschrijving || '';
+    document.getElementById('prCategorie').value     = p.categorie || 'uniform';
+    document.getElementById('prBadge').value         = p.badge_label || '';
+    document.getElementById('prMaten').value         = (p.maten || []).join(', ');
+    document.getElementById('prVolgorde').value      = p.volgorde ?? 0;
+    deleteBtn.style.display = 'flex';
+
+    // Toon bestaande foto als preview
+    if (p.foto_url) {
+      bestaandeFotoUrl = p.foto_url;
+      const zone = document.getElementById('fotoUploadZone');
+      zone.innerHTML = `
+        <img src="${esc(p.foto_url)}" alt="Huidige foto" style="width:100%;height:160px;object-fit:cover;display:block;border-radius:10px">
+        <input type="file" id="fotoInput" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="handleFotoKeuze(event)">`;
+      zone.onclick = () => document.getElementById('fotoInput').click();
+    }
+  } else {
+    document.getElementById('productModalTitle').textContent = 'Product toevoegen';
+    document.getElementById('prNaam').value         = '';
+    document.getElementById('prEmoji').value        = '📦';
+    document.getElementById('prPrijs').value        = '';
+    document.getElementById('prBeschrijving').value = '';
+    document.getElementById('prCategorie').value    = 'uniform';
+    document.getElementById('prBadge').value        = '';
+    document.getElementById('prMaten').value        = '';
+    document.getElementById('prVolgorde').value     = '';
+    deleteBtn.style.display = 'none';
+  }
+
+  document.getElementById('productModal').style.display = 'flex';
+  setTimeout(() => document.getElementById('prNaam')?.focus(), 50);
+}
+
+function closeProductModal() {
+  document.getElementById('productModal').style.display = 'none';
+  productBewerkId = null;
+  gekozenFotoFile = null;
+}
+
+// ── Opslaan ──────────────────────────────────────────────────
+async function saveProduct() {
+  const naam         = document.getElementById('prNaam').value.trim();
+  const emoji        = document.getElementById('prEmoji').value.trim() || '📦';
+  const prijs        = parseFloat(document.getElementById('prPrijs').value);
+  const beschrijving = document.getElementById('prBeschrijving').value.trim();
+  const categorie    = document.getElementById('prCategorie').value;
+  const badge_label  = document.getElementById('prBadge').value.trim();
+  const matenRaw     = document.getElementById('prMaten').value.trim();
+  const volgorde     = parseInt(document.getElementById('prVolgorde').value) || 0;
+  const btn          = document.getElementById('productSaveBtn');
+  const err          = document.getElementById('productModalError');
+  const voortgang    = document.getElementById('uploadVoortgang');
+
+  err.textContent = '';
+  if (!naam)          { err.textContent = 'Vul een naam in.'; return; }
+  if (isNaN(prijs))   { err.textContent = 'Vul een geldige prijs in.'; return; }
+
+  const maten = matenRaw ? matenRaw.split(',').map(m => m.trim()).filter(Boolean) : null;
+
+  btn.disabled    = true;
+  btn.textContent = 'Bezig…';
+
+  try {
+    const sb = window.AlbatrosAuth?.supabase;
+    if (!sb) throw new Error('Niet verbonden. Herlaad de pagina.');
+
+    // Bepaal product ID (nieuw of bestaand)
+    const targetId = productBewerkId || crypto.randomUUID();
+
+    // Foto uploaden indien nieuw gekozen
+    let foto_url = bestaandeFotoUrl || null;
+    if (gekozenFotoFile) {
+      voortgang.style.display = 'flex';
+      foto_url = await uploadFoto(sb, gekozenFotoFile, targetId);
+      voortgang.style.display = 'none';
+    }
+
+    const payload = {
+      naam,
+      emoji,
+      prijs,
+      beschrijving: beschrijving || null,
+      categorie,
+      badge_label: badge_label || null,
+      maten: maten?.length ? maten : null,
+      foto_url,
+      volgorde,
+      actief: true
+    };
+
+    let error;
+    if (productBewerkId) {
+      ({ error } = await sb.from('shop_producten').update(payload).eq('id', productBewerkId));
+    } else {
+      ({ error } = await sb.from('shop_producten').insert({ id: targetId, ...payload }));
+    }
+
+    if (error) throw error;
+    closeProductModal();
+    await laadProducten();
+  } catch(e) {
+    voortgang.style.display = 'none';
+    err.textContent = e.message || 'Opslaan mislukt.';
+  } finally {
+    btn.disabled  = false;
+    btn.innerHTML = '<i class="ti ti-check"></i> Opslaan';
+  }
+}
+
+// ── Verwijderen (zet actief=false) ───────────────────────────
+async function deleteProduct() {
+  if (!productBewerkId) return;
+  const p = alleProducten.find(x => x.id === productBewerkId);
+  if (!confirm(`"${p?.naam || 'dit product'}" verwijderen uit de shop?`)) return;
+
+  const btn = document.getElementById('productDeleteBtn');
+  btn.disabled = true;
+
+  try {
+    const sb = window.AlbatrosAuth?.supabase;
+    if (!sb) throw new Error('Niet verbonden.');
+    const { error } = await sb.from('shop_producten').update({ actief: false }).eq('id', productBewerkId);
+    if (error) throw error;
+    closeProductModal();
+    await laadProducten();
+  } catch(e) {
+    document.getElementById('productModalError').textContent = e.message || 'Verwijderen mislukt.';
+    btn.disabled = false;
+  }
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeProductModal();
+});
+
+document.addEventListener('DOMContentLoaded', () => setTimeout(laadProducten, 300));
+</script>
+
+</body>
+</html>
