@@ -15,18 +15,21 @@
   --yellow-pale:#FEF9E7;
   --white:      #fff;
   --cream:      #F4F8FC;
-  --text:       #16202A;
+  --text:       #1a2a3a;
   --text-muted: #5D6D7E;
-  --border:     rgba(0,0,0,0.09);
+  --border:     rgba(26,82,118,0.12);
   --radius:     14px;
   --shadow-sm:  0 2px 8px rgba(26,82,118,.07);
   --shadow-md:  0 6px 24px rgba(26,82,118,.12);
+  /* Light theme tokens */
+  --page-bg:    #EAF2FA;
+  --surface:    #ffffff;
 }
 
 body {
   font-family: 'Nunito', sans-serif;
   color: var(--text);
-  background: #EAF2FA;
+  background: var(--page-bg);
   line-height: 1.6;
   font-size: 15px;
 }
@@ -90,8 +93,8 @@ body {
 
 /* ── SITE HEADER (licht, niet-sticky) ───────────────────────── */
 #siteHeader {
-  background: #EAF2FA;
-  border-bottom: 1px solid var(--border);
+  background: var(--blue-dark);
+  border-bottom: none;
   position: relative;
   z-index: 200;
 }
@@ -132,7 +135,7 @@ body {
   font-family: 'Nunito', sans-serif;
   font-weight: 700;
   font-size: .92rem;
-  color: var(--text);
+  color: rgba(255,255,255,.75);
   text-decoration: none;
   padding: .45rem .8rem;
   border-radius: 8px;
@@ -140,18 +143,18 @@ body {
   white-space: nowrap;
 }
 .hn-link:hover {
-  background: rgba(26,82,118,.07);
-  color: var(--blue);
+  background: rgba(255,255,255,.1);
+  color: #fff;
 }
 .hn-link.active {
-  color: var(--blue);
+  color: var(--yellow);
   font-weight: 900;
 }
 
 /* Hamburger (altijd zichtbaar, want sidebar heeft meer links) */
 .hamburger {
-  background: transparent;
-  border: 1.5px solid var(--border);
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.2);
   border-radius: 10px;
   width: 42px; height: 42px;
   display: flex;
@@ -160,18 +163,15 @@ body {
   justify-content: center;
   gap: 5px;
   cursor: pointer;
-  transition: background .2s, border-color .2s;
+  transition: background .2s;
   flex-shrink: 0;
   padding: 0;
 }
-.hamburger:hover {
-  background: rgba(26,82,118,.07);
-  border-color: var(--blue-light);
-}
+.hamburger:hover { background: rgba(255,255,255,.2); }
 .hamburger span {
   display: block;
-  width: 18px; height: 2px;
-  background: var(--text);
+  width: 20px; height: 2px;
+  background: #fff;
   border-radius: 2px;
   transition: transform .25s ease, opacity .25s ease;
   transform-origin: center;
@@ -462,7 +462,7 @@ body {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background: #EAF2FA;
+  background: var(--page-bg);
   border: none;
   border-radius: 50%;
   width: 32px;
@@ -553,9 +553,9 @@ body {
 
 /* ── HERO ────────────────────────────────────────────────────── */
 .hero {
-  background: linear-gradient(150deg, var(--blue-dark) 0%, var(--blue) 55%, #2471A3 100%);
-  color: #fff;
-  padding: 3rem 2rem 2.5rem;
+  background: var(--page-bg);
+  color: var(--text);
+  padding: 3.5rem 2rem 2.5rem;
   position: relative;
   overflow: hidden;
 }
@@ -564,8 +564,8 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(245,197,24,.15);
-  border: 1px solid rgba(245,197,24,.4);
+  background: var(--blue-pale);
+  border: 1px solid rgba(26,82,118,.2);
   border-radius: 999px;
   padding: 4px 14px;
   font-size: .68rem;
@@ -573,16 +573,17 @@ body {
   letter-spacing: 1.5px;
   text-transform: uppercase;
   margin-bottom: .9rem;
-  color: var(--yellow);
+  color: var(--blue);
 }
 .hero h1 {
   font-family: 'Playfair Display', serif;
   font-size: 2.4rem;
   line-height: 1.15;
   margin-bottom: .6rem;
+  color: var(--blue-dark);
 }
-.hero h1 span { color: var(--yellow); }
-.hero p { font-size: .95rem; opacity: .82; margin-bottom: 1.5rem; max-width: 440px; }
+.hero h1 span { color: var(--blue); }
+.hero p { font-size: .95rem; color: var(--text-muted); margin-bottom: 1.5rem; max-width: 440px; }
 .hero-btns { display: flex; gap: 10px; flex-wrap: wrap; }
 .hero-logo {
   position: absolute;
@@ -613,8 +614,9 @@ body {
 .btn-yellow:hover { background: #ffe55a; }
 .btn-outline {
   background: transparent;
-  color: #fff;
-  border: 1.5px solid rgba(255,255,255,.45);
+  color: var(--blue);
+  border: 1.5px solid var(--blue);
+  transition: background .15s, color .15s;
   padding: 11px 24px;
   border-radius: 999px;
   font-family: 'Nunito', sans-serif;
