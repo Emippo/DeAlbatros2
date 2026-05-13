@@ -17,23 +17,18 @@
   const prefix = depth > 0 ? '../'.repeat(depth) : '';
 
   // ── Nav links ─────────────────────────────────────────────
-  const NAV_LINKS = [
-    { id: 'leiding',        href: prefix + 'info/leiding.html',   label: 'Leiding' },
-    { id: 'takken',         href: prefix + 'takken.html',         label: 'Takken' },
-    { id: 'kalender',       href: prefix + 'kalender.html',       label: 'Events' },
-    { id: 'albatrossertje', href: prefix + 'albatrossertje.html', label: 'Albatrossertje' },
-    { id: 'kampen',         href: prefix + 'info/kampen.html',    label: 'Kamp' },
-    { id: 'vzw',            href: prefix + 'info/vzw.html',       label: 'VZW' },
-  ];
-
-  const SIDEBAR_EXTRA = [
-    { id: 'index',    href: prefix + 'index.html',   icon: 'ti-home',            label: 'Home' },
-    { id: 'fotos',    href: prefix + 'fotos.html',   icon: 'ti-photo',           label: "Foto's" },
-    { id: 'fosshop',  href: prefix + 'fosshop.html', icon: 'ti-shirt',           label: 'FOS-shop' },
-    { id: 'contact',  href: prefix + 'contact.html', icon: 'ti-mail',            label: 'Contact' },
-    { id: 'facebook', href: 'http://www.facebook.com/FOSalbatros',    icon: 'ti-brand-facebook',  label: 'Facebook' },
-    { id: 'insta',    href: 'https://www.instagram.com/de_albatros/', icon: 'ti-brand-instagram', label: 'Instagram' },
-  ];
+    const NAV_LINKS = [
+      { id: 'index',          href: prefix + 'index.html',          icon: 'ti-home',        label: 'Home' },
+      { id: 'info',           href: prefix + 'info.html',           icon: 'ti-info-circle',  label: 'Info' },
+      { id: 'takken',         href: prefix + 'info/leiding.html',   icon: 'ti-users',        label: 'Leiding' },
+      { id: 'fotos',          href: prefix + 'fotos.html',          icon: 'ti-photo',        label: "Foto's" },
+      { id: 'kalender',       href: prefix + 'kalender.html',       icon: 'ti-calendar',     label: 'Kalender' },
+      { id: 'albatrossertje', href: prefix + 'albatrossertje.html', icon: 'ti-news',         label: "'t Albatrossertje" },
+      { id: 'fosshop',        href: prefix + 'fosshop.html',        icon: 'ti-shirt',        label: 'FOS-shop' },
+      { id: 'contact',        href: prefix + 'contact.html',        icon: 'ti-mail',         label: 'Contact' },
+      { id: 'facebook',        href: 'http://www.facebook.com/FOSalbatros',   icon:'ti-brand-facebook', label: 'Facebook' },
+      { id: 'instagram',        href: 'https://www.instagram.com/de_albatros/', icon:'ti-brand-instagram', label: 'Instagram'}
+    ];
 
   const TAKKEN = [
     { href: prefix + 'takken/bevers.html',  kleur: '#E24B4A', emoji: '🦫', label: 'Bevers' },
@@ -53,7 +48,6 @@
 
     const allSidebarLinks = [
       ...NAV_LINKS.map(l => ({ ...l, icon: 'ti-chevron-right' })),
-      ...SIDEBAR_EXTRA,
     ];
 
     const sidebarLinks = allSidebarLinks.map(l => `
