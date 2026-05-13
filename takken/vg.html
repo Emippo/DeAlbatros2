@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VG's | 102e FOS De Albatros</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="stylesheet" href="../css/style.css">
+<script>window.ACTIVE_PAGE='takken'; window.COMPONENTS_DEPTH=1;</script>
+<script src="../js/components.js"></script>
+<script src="../js/leiding-utils.js"></script>
+</head>
+<body>
+
+<div class="edit-bar" data-edit-tak="vg">
+  <span><i class="ti ti-shield-check"></i> VG - leiding / Eenheidsleiding</span>
+  <button class="edit-bar-btn" onclick="LeidingUtils.openModal()"><i class="ti ti-user-plus"></i> Leidingslid toevoegen</button>
+</div>
+
+<div class="tak-page-header" style="background:linear-gradient(150deg,#0a2844,#1A5276)">
+  <span class="tak-emoji-big">⚜️</span>
+  <h1>VG's</h1>
+  <div class="tak-leeftijd">3e &amp; 4e middelbaar</div>
+  <p>Verkenners nemen steeds meer verantwoordelijkheid en organiseren zelf uitdagende activiteiten en projecten.</p>
+</div>
+
+<div style="background:#fff;border-bottom:0.5px solid var(--border);padding:.6rem 2rem;display:flex;gap:.5rem;flex-wrap:wrap">
+  <a href="bevers.html" style="font-size:.75rem;font-weight:700;color:var(--text-muted);text-decoration:none;padding:4px 12px;border-radius:999px">Bevers</a>
+  <a href="welpen.html" style="font-size:.75rem;font-weight:700;color:var(--text-muted);text-decoration:none;padding:4px 12px;border-radius:999px">Welpen</a>
+  <a href="jvg.html" style="font-size:.75rem;font-weight:700;color:var(--text-muted);text-decoration:none;padding:4px 12px;border-radius:999px">JVG's</a>
+  <a href="vg.html" style="font-size:.75rem;font-weight:900;color:#1A5276;text-decoration:none;padding:4px 12px;background:#D6EAF8;border-radius:999px">VG's</a>
+  <a href="seniors.html" style="font-size:.75rem;font-weight:700;color:var(--text-muted);text-decoration:none;padding:4px 12px;border-radius:999px">Seniors</a>
+  <a href="stam.html" style="font-size:.75rem;font-weight:700;color:var(--text-muted);text-decoration:none;padding:4px 12px;border-radius:999px">Stam</a>
+</div>
+
+<div class="section">
+  <div class="section-label">Over de tak</div>
+  <div class="section-title">Wat doen VG's?</div>
+  <div class="tak-info-grid">
+    <div class="tak-info-card"><div class="icon">🗺️</div><h3>Eigen projecten</h3><p>VG's plannen en organiseren hun eigen activiteiten, uitstappen en projecten van A tot Z.</p></div>
+    <div class="tak-info-card"><div class="icon">🔥</div><h3>Uitdagende technieken</h3><p>Als oudste leer je de moeilijkste technieken: van diverse kookvuren bouwen tot torenhoge constructies.</p></div>
+    <div class="tak-info-card"><div class="icon">🏆</div><h3>Groepsverantwoordelijkheid</h3><p>Als oudste actieve leden zijn VG's een voorbeeld voor de jongere takken.</p></div>
+    
+  </div>
+</div>
+
+<div class="divider"></div>
+<div class="section">
+  <div class="section-label">Praktisch</div>
+  <div class="section-title">Info voor ouders</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem">
+    <div style="background:#fff;border:0.5px solid var(--border);border-radius:var(--radius);padding:1.2rem"><div style="font-size:1.2rem;margin-bottom:.4rem">📅</div><h3 style="font-size:.88rem;font-weight:900;margin-bottom:.3rem">Vergaderdag</h3><p style="font-size:.8rem;color:var(--text-muted)">Elke zaterdag van 14u tot 17u.</p></div>
+    <div style="background:#fff;border:0.5px solid var(--border);border-radius:var(--radius);padding:1.2rem"><div style="font-size:1.2rem;margin-bottom:.4rem">👕</div><h3 style="font-size:.88rem;font-weight:900;margin-bottom:.3rem">Uniform</h3><p style="font-size:.8rem;color:var(--text-muted)">FOS-hemd, donkerblauwe broek en eenheidsdas.</p></div>
+    <div style="background:#fff;border:0.5px solid var(--border);border-radius:var(--radius);padding:1.2rem"><div style="font-size:1.2rem;margin-bottom:.4rem">💶</div><h3 style="font-size:.88rem;font-weight:900;margin-bottom:.3rem">Lidgeld</h3><p style="font-size:.8rem;color:var(--text-muted)">Inschrijven via <a href="http://www.keeo.fos.be" style="color:var(--blue-light);font-weight:700" target="_blank">Keeo</a>.</p></div>
+  </div>
+</div>
+
+
+<div class="divider"></div>
+<div class="section">
+  <div class="section-label">Leiding</div>
+  <div class="section-title">Onze VG - leiding</div>
+  <div id="leidingContainer">
+    <div class="leiding-loading"><i class="ti ti-loader-2 spin"></i></div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section">
+  <div class="section-label">Activiteiten</div>
+  <div class="section-title">Komende activiteiten</div>
+  <div id="activiteitenContainer">
+    <div class="leiding-loading"><i class="ti ti-loader-2 spin"></i></div>
+  </div>
+  <p style="margin-top:.8rem"><a href="../kalender.html" style="font-size:.82rem;font-weight:700;color:var(--blue-light);text-decoration:none">Volledige kalender →</a></p>
+</div>
+
+
+<div class="section" style="padding-top:.5rem">
+  <div class="lid-banner"><div><h2>Meedoen bij de VG's?</h2><p>Inschrijven kan via Keeo.</p></div><a href="http://www.keeo.fos.be" class="btn-blue" target="_blank">Inschrijven</a></div>
+</div>
+
+<script>
+
+  // Leiding laden
+function laadLeiding() {
+  LeidingUtils.laadVoorTak('vg', 'leidingContainer');
+}
+window.addEventListener('leiding-updated', laadLeiding);
+document.addEventListener('DOMContentLoaded', () => setTimeout(laadLeiding, 300));
+
+// Activiteiten laden voor VG's
+document.addEventListener('DOMContentLoaded', () => setTimeout(() => {
+  LeidingUtils.laadActiviteiten('vg', 'activiteitenContainer', '#EF9F27', 'VG\'s');
+}, 300));
+</script>
+
+</body>
+</html>

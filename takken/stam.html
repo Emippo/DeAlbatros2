@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stam | 102e FOS De Albatros</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="stylesheet" href="../css/style.css">
+<script>window.ACTIVE_PAGE='takken'; window.COMPONENTS_DEPTH=1;</script>
+<script src="../js/components.js"></script>
+<script src="../js/leiding-utils.js"></script>
+</head>
+<body>
+
+<div class="edit-bar" data-edit-tak="stam">
+  <span><i class="ti ti-shield-check"></i> Stamleiding / Eenheidsleiding</span>
+  <button class="edit-bar-btn" onclick="LeidingUtils.openModal()"><i class="ti ti-user-plus"></i> Leidingslid toevoegen</button>
+</div>
+
+<div class="tak-page-header" style="background:linear-gradient(150deg,#1a1a2a,#5a5a6a)">
+  <span class="tak-emoji-big">🏕️</span>
+  <h1>Stam</h1>
+  <div class="tak-leeftijd">18+</div>
+  <p>De stam bestaat uit volwassen leden die de groep mee dragen, de traditie levend houden en de leiding ondersteunen.</p>
+</div>
+
+<div style="background:#fff;border-bottom:0.5px solid var(--border);padding:.6rem 2rem;display:flex;gap:.5rem;flex-wrap:wrap">
+  <a href="bevers.html" style="font-size:.75rem;font-weight:700;color:var(--text-muted);text-decoration:none;padding:4px 12px;border-radius:999px">Bevers</a>
+  <a href="welpen.html" style="font-size:.75rem;font-weight:700;color:var(--text-muted);text-decoration:none;padding:4px 12px;border-radius:999px">Welpen</a>
+  <a href="jvg.html" style="font-size:.75rem;font-weight:700;color:var(--text-muted);text-decoration:none;padding:4px 12px;border-radius:999px">JVG's</a>
+  <a href="vg.html" style="font-size:.75rem;font-weight:700;color:var(--text-muted);text-decoration:none;padding:4px 12px;border-radius:999px">VG's</a>
+  <a href="seniors.html" style="font-size:.75rem;font-weight:700;color:var(--text-muted);text-decoration:none;padding:4px 12px;border-radius:999px">Seniors</a>
+  <a href="stam.html" style="font-size:.75rem;font-weight:900;color:#5a5a6a;text-decoration:none;padding:4px 12px;background:#EAECEE;border-radius:999px">Stam</a>
+</div>
+
+<div class="section">
+  <div class="section-label">Over de tak</div>
+  <div class="section-title">Wat doen stam?</div>
+  <div class="tak-info-grid">
+    <div class="tak-info-card"><div class="icon">🛠️</div><h3>Ondersteuning</h3><p>De stam helpt bij het organiseren van grote evenementen, kampen en logistieke taken van voornamelijk de VZW, maar ook van de eenheid.</p></div>
+    <div class="tak-info-card"><div class="icon">📜</div><h3>Traditie bewaken</h3><p>Als langdurige leden dragen stamleden de verhalen, gebruiken en waarden van De Albatros verder.</p></div>
+    <div class="tak-info-card"><div class="icon">🎉</div><h3>Eigen activiteiten</h3><p>De stam organiseert ook eigen activiteiten: feesten, spellen en samenkomsten voor volwassen leden.</p></div>
+    <div class="tak-info-card"><div class="icon">❤️</div><h3>Community</h3><p>Eenmaal Albatros, altijd Albatros. De stam is de plek waar oud-leiding verbonden blijft met de actieve leiding</p></div>
+    
+  </div>
+</div>
+
+
+<div class="divider"></div>
+<div class="section">
+  <div class="section-label">Contact</div>
+  <div class="section-title">Lid worden van de stam?</div>
+  <div style="background:#fff;border:0.5px solid var(--border);border-radius:var(--radius);padding:1.5rem;max-width:480px">
+    <p style="font-size:.88rem;color:var(--text-muted);margin-bottom:1rem">Ben je leiding geweest en wil je betrokken blijven bij De Albatros? Neem contact op met de eenheidsleiding of met de stamverantwoordelijke.</p>
+    <a href="mailto:eenheidsleiding@dealbatros.be" class="btn-blue" style="display:inline-flex;align-items:center;gap:.4rem"><i class="ti ti-mail"></i> Contacteer ons</a>
+  </div>
+</div>
+
+
+<div class="divider"></div>
+
+<div class="section">
+  <div class="section-label">Activiteiten</div>
+  <div class="section-title">Komende activiteiten</div>
+  <div id="activiteitenContainer">
+    <div class="leiding-loading"><i class="ti ti-loader-2 spin"></i></div>
+  </div>
+  <p style="margin-top:.8rem"><a href="../kalender.html" style="font-size:.82rem;font-weight:700;color:var(--blue-light);text-decoration:none">Volledige kalender →</a></p>
+</div>
+
+<script>
+
+
+// Activiteiten laden voor stam
+document.addEventListener('DOMContentLoaded', () => setTimeout(() => {
+  LeidingUtils.laadActiviteiten('stam', 'activiteitenContainer', '#5a5a6a', 'Stam');
+}, 300));
+</script>
+
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seniors | 102e FOS De Albatros</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="stylesheet" href="../css/style.css">
+<script>window.ACTIVE_PAGE='takken'; window.COMPONENTS_DEPTH=1;</script>
+<script src="../js/components.js"></script>
+<script src="../js/leiding-utils.js"></script>
+</head>
+<body>
+
+<div class="edit-bar" data-edit-tak="seniors">
+  <span><i class="ti ti-shield-check"></i> Seniorsleiding / Eenheidsleiding</span>
+  <button class="edit-bar-btn" onclick="LeidingUtils.openModal()"><i class="ti ti-user-plus"></i> Leidingslid toevoegen</button>
+</div>
+
+<div class="tak-page-header" style="background:linear-gradient(150deg,#2E1F6E,#7F77DD)">
+  <span class="tak-emoji-big">🔥</span>
+  <h1>Seniors</h1>
+  <div class="tak-leeftijd">5e middelbaar</div>
+  <p>De seniors vormen de schakel tussen de actieve leden en de toekomstige leiding. Een bijzonder jaar vol ceremonie, vriendschap en diepgang.</p>
+</div>
+
+<div style="background:#fff;border-bottom:0.5px solid var(--border);padding:.6rem 2rem;display:flex;gap:.5rem;flex-wrap:wrap">
+  <a href="bevers.html" style="font-size:.75rem;font-weight:700;color:var(--text-muted);text-decoration:none;padding:4px 12px;border-radius:999px">Bevers</a>
+  <a href="welpen.html" style="font-size:.75rem;font-weight:700;color:var(--text-muted);text-decoration:none;padding:4px 12px;border-radius:999px">Welpen</a>
+  <a href="jvg.html" style="font-size:.75rem;font-weight:700;color:var(--text-muted);text-decoration:none;padding:4px 12px;border-radius:999px">JVG's</a>
+  <a href="vg.html" style="font-size:.75rem;font-weight:700;color:var(--text-muted);text-decoration:none;padding:4px 12px;border-radius:999px">VG's</a>
+  <a href="seniors.html" style="font-size:.75rem;font-weight:900;color:#7F77DD;text-decoration:none;padding:4px 12px;background:#EAE8FF;border-radius:999px">Seniors</a>
+  <a href="stam.html" style="font-size:.75rem;font-weight:700;color:var(--text-muted);text-decoration:none;padding:4px 12px;border-radius:999px">Stam</a>
+</div>
+
+<div class="section">
+  <div class="section-label">Over de tak</div>
+  <div class="section-title">Wat doen seniors?</div>
+  <div class="tak-info-grid">
+    <div class="tak-info-card"><div class="icon">🧭</div><h3>Buitenlands Kamp</h3><p>De Seniors sparen heel het jaar om samen een mooie reis te maken in het buitenland naar een bestemming van eigen keus.</p></div>
+    <div class="tak-info-card"><div class="icon">🫂</div><h3>Vriendschap</h3><p>Deze tak vormt een hecht groepje vrienden. Ze kennen elkaar vaak al heel lang (vaak al van bij de Bevers) en hebben een zeer intense band. Om hun doelen te bereiken, moeten ze nauw samenwerken.</p></div>
+    <div class="tak-info-card"><div class="icon">🚀</div><h3>Voorbereid op leiding</h3><p>Seniors geven 2 tot 3 keer leiding bij de bevers en welpen, zo zijn ze zeker klaar voor het jaar dat volgt!</p></div>
+    
+  </div>
+</div>
+
+<div class="divider"></div>
+<div class="section">
+  <div class="section-label">Praktisch</div>
+  <div class="section-title">Info voor ouders</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem">
+    <div style="background:#fff;border:0.5px solid var(--border);border-radius:var(--radius);padding:1.2rem"><div style="font-size:1.2rem;margin-bottom:.4rem">📅</div><h3 style="font-size:.88rem;font-weight:900;margin-bottom:.3rem">Vergaderdag</h3><p style="font-size:.8rem;color:var(--text-muted)">De Seniors spreken zelf af met hun moderators.</p></div>
+    <div style="background:#fff;border:0.5px solid var(--border);border-radius:var(--radius);padding:1.2rem"><div style="font-size:1.2rem;margin-bottom:.4rem">👕</div><h3 style="font-size:.88rem;font-weight:900;margin-bottom:.3rem">Uniform</h3><p style="font-size:.8rem;color:var(--text-muted)">Blauw FOS-hemd + eenheidsdas.</p></div>
+    <div style="background:#fff;border:0.5px solid var(--border);border-radius:var(--radius);padding:1.2rem"><div style="font-size:1.2rem;margin-bottom:.4rem">💶</div><h3 style="font-size:.88rem;font-weight:900;margin-bottom:.3rem">Lidgeld</h3><p style="font-size:.8rem;color:var(--text-muted)">Inschrijven via <a href="http://www.keeo.fos.be" style="color:var(--blue-light);font-weight:700" target="_blank">Keeo</a>.</p></div>
+  </div>
+</div>
+
+
+<div class="divider"></div>
+<div class="section">
+  <div class="section-label">Leiding</div>
+  <div class="section-title">Onze seniorsleiding</div>
+  <div id="leidingContainer">
+    <div class="leiding-loading"><i class="ti ti-loader-2 spin"></i></div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section">
+  <div class="section-label">Activiteiten</div>
+  <div class="section-title">Komende activiteiten</div>
+  <div id="activiteitenContainer">
+    <div class="leiding-loading"><i class="ti ti-loader-2 spin"></i></div>
+  </div>
+  <p style="margin-top:.8rem"><a href="../kalender.html" style="font-size:.82rem;font-weight:700;color:var(--blue-light);text-decoration:none">Volledige kalender →</a></p>
+</div>
+
+
+<div class="section" style="padding-top:.5rem">
+  <div class="lid-banner"><div><h2>Meedoen bij de seniors?</h2><p>Inschrijven kan via Keeo.</p></div><a href="http://www.keeo.fos.be" class="btn-blue" target="_blank">Inschrijven</a></div>
+</div>
+
+<script>
+
+// Leiding laden
+function laadLeiding() {
+  LeidingUtils.laadVoorTak('seniors', 'leidingContainer');
+}
+window.addEventListener('leiding-updated', laadLeiding);
+document.addEventListener('DOMContentLoaded', () => setTimeout(laadLeiding, 300));
+
+// Activiteiten laden voor seniors
+document.addEventListener('DOMContentLoaded', () => setTimeout(() => {
+  LeidingUtils.laadActiviteiten('seniors', 'activiteitenContainer', '#7F77DD', 'Seniors');
+}, 300));
+</script>
+
+</body>
+</html>
