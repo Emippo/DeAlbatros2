@@ -124,9 +124,9 @@
 <footer>
   <div class="footer-inner">
     <div>
-      <img src="${prefix}img/logo.png" onerror="this.style.display='none'" alt="Logo" style="width:52px;height:52px;border-radius:50%;margin-bottom:.6rem;border:2px solid rgba(245,197,24,.4)">
-      <div><strong style="color:var(--yellow)">102e FOS De Albatros</strong></div>
-      <div style="margin-top:.2rem;opacity:.6">Knokke-Heist · <a href="http://www.fos.be" style="color:rgba(255,255,255,.4)" target="_blank">FOS Open Scouting</a></div>
+      <img src="${prefix}img/logo.png" onerror="this.style.display='none'" alt="Logo" style="width:52px;height:52px;border-radius:50%;margin-bottom:.6rem;border:2px solid var(--border)">
+      <div><strong style="color:var(--blue-dark)">102e FOS De Albatros</strong></div>
+      <div style="margin-top:.2rem;opacity:.6">Knokke-Heist · <a href="http://www.fos.be" style="color:var(--text-muted)" target="_blank">FOS Open Scouting</a></div>
       <div class="footer-social">
         <a href="http://www.facebook.com/FOSalbatros" target="_blank"><i class="ti ti-brand-facebook"></i> Facebook</a>
         <a href="https://www.instagram.com/de_albatros/" target="_blank"><i class="ti ti-brand-instagram"></i> Instagram</a>
