@@ -676,12 +676,13 @@ nav.nav-scrolled { /* placeholder */ }
 
 /* ── PAGE HEADER ─────────────────────────────────────────────── */
 .page-header {
-  background: linear-gradient(150deg, var(--blue-dark), var(--blue));
+  background: var(--blue-pale);
   color: #fff;
   padding: 2rem 2rem 1.8rem;
 }
 .page-header .section-label { color: var(--yellow); opacity: 1; }
 .page-header h1 {
+   color: var(--blue-dark);
   font-family: 'Playfair Display', serif;
   font-size: 2rem;
   line-height: 1.2;
