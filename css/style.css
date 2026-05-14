@@ -109,15 +109,14 @@ nav {
   text-decoration: none;
 }
 #navLogoImg {
-  width: 90px; height: 90px;
+  width: 120px; height: 120px;
   border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid var(--blue-light);
+  object-fit: contain;
   flex-shrink: 0;
 }
 .nav-logo-text {
   font-family: 'Playfair Display', serif;
-  font-size: 1.35rem;
+  font-size: 1.55rem;
   color: var(--blue-dark);
   font-weight: 700;
   line-height: 1.15;
@@ -125,82 +124,12 @@ nav {
 .nav-logo-text small {
   display: block;
   font-family: 'Nunito', sans-serif;
-  font-size: .68rem;
+  font-size: .75rem;
   letter-spacing: 1.2px;
   text-transform: uppercase;
   color: var(--blue-light);
   font-weight: 600;
   overflow: hidden;
-}
-
-/* nav-scrolled wordt niet meer gebruikt voor grootte,
-   alleen nog als hook voor andere elementen indien gewenst */
-nav.nav-scrolled { /* placeholder */ }
-
-/* ── SPONSOR BALK in nav ─────────────────────────────────── */
-#navSponsors {
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-  flex-shrink: 0;
-  /* breedte/hoogte worden via JS gezet */
-}
-
-/* Logo-modus: afbeeldingen als slideshow */
-.sponsor-logo-slide {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-}
-.sponsor-logo-slide.active { display: flex; }
-.sponsor-logo-slide img {
-  max-height: 100%;
-  max-width: 120px;
-  object-fit: contain;
-  filter: brightness(0) invert(1);
-  opacity: .75;
-  transition: opacity .3s;
-}
-.sponsor-logo-slide img:hover { opacity: 1; }
-
-/* Naam-modus: tekst als ticker */
-.sponsor-name-ticker {
-  display: none;
-  align-items: center;
-  gap: .5rem;
-  color: rgba(255,255,255,.6);
-  font-size: .7rem;
-  font-weight: 700;
-  letter-spacing: .5px;
-  white-space: nowrap;
-  overflow: hidden;
-}
-.sponsor-name-ticker.visible { display: flex; }
-.sponsor-name-ticker .sponsor-label {
-  font-size: .55rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: rgba(255,255,255,.35);
-  flex-shrink: 0;
-}
-.sponsor-name-slide {
-  display: none;
-  align-items: center;
-  gap: .35rem;
-  color: rgba(255,255,255,.75);
-  font-weight: 800;
-  font-size: .72rem;
-}
-.sponsor-name-slide.active { display: flex; }
-.sponsor-name-slide::before {
-  content: '';
-  display: inline-block;
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--yellow);
-  opacity: .7;
-  flex-shrink: 0;
 }
 
 /* Hamburger knop */
@@ -279,8 +208,7 @@ nav.nav-scrolled { /* placeholder */ }
 .sidebar-logo img {
   width: 40px; height: 40px;
   border-radius: 50%;
-  border: 2px solid var(--yellow);
-  object-fit: cover;
+  object-fit: contain;
 }
 .sidebar-logo strong {
   display: block;
@@ -619,9 +547,8 @@ nav.nav-scrolled { /* placeholder */ }
   width: 180px;
   height: 220px;
   border-radius: 16px;
-  object-fit: cover;
+  object-fit: contain;
   box-shadow: var(--shadow-md);
-  border: 3px solid #fff;
 }
 .hero-photo:nth-child(2) {
   margin-top: 2rem; /* licht verschoven voor diepte */
@@ -759,9 +686,8 @@ nav.nav-scrolled { /* placeholder */ }
   width: 130px;
   height: 160px;
   border-radius: 14px;
-  object-fit: cover;
+  object-fit: contain;
   box-shadow: var(--shadow-md);
-  border: 3px solid #fff;
 }
 .page-header-photos img:nth-child(2) { margin-top: 1.4rem; }
 
@@ -776,9 +702,8 @@ nav.nav-scrolled { /* placeholder */ }
   width: 170px;
   height: 215px;
   border-radius: 16px;
-  object-fit: cover;
+  object-fit: contain;
   box-shadow: var(--shadow-md);
-  border: 3px solid #fff;
 }
 .hero-photos img:nth-child(2) { margin-top: 2rem; }
 
