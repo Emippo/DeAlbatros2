@@ -65,13 +65,13 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
-  background: rgba(245,197,24,.15);
-  border: 1px solid rgba(245,197,24,.4);
+  background: rgba(26, 82, 118, .1);
+  border: 1px solid rgba(26, 82, 118, .25);
   border-radius: 999px;
   padding: 4px 10px 4px 12px;
   font-size: .7rem;
   font-weight: 700;
-  color: var(--yellow);
+  color: var(--blue);
 }
 .user-chip i { font-size: .85rem; }
 .user-chip span { color: rgba(255,255,255,.85); }
